@@ -46,7 +46,7 @@ def play(type_play="PVP"):
             if type_play == "PVP" :
                 ac = input("เลือกดำเนินการ (1/2) :\t")
               
-            elif type_play == "bot" :
+            elif type_play == "botvshuman" :
                 ####################################################################### จุดแตกต่างจาก play ธรรมดา
                 if turn == 1 :
                     ac = input("เลือกดำเนินการ (1/2) :\t") 
@@ -55,6 +55,15 @@ def play(type_play="PVP"):
                         time.sleep(1)
                     ac = random.choice(["3", "4", "5"])
                 #######################################################################
+            elif type_play == "botvsbit" :
+                if turn == 1 :
+                    for i in tqdm(range(3)) : #Fake thinking
+                        time.sleep(1)
+                    ac = random.choice(["3", "4", "5"])
+                elif turn == 2 :
+                    for i in tqdm(range(3)) : #Fake thinking
+                        time.sleep(1)
+                    ac = random.choice(["3", "4", "5"])
             if ac in ["1" , "2", "3", "4", "5"] :
                 break
             else :
@@ -121,4 +130,4 @@ def play(type_play="PVP"):
         sp.show_field()
 
         Round += 1
-play(type_play = "PVP")
+play(type_play = "botvsbit")
