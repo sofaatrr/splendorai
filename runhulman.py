@@ -1,0 +1,129 @@
+import os
+from IPython.display import clear_output
+import time 
+import math
+import numpy as np
+import random
+from collections import defaultdict
+import json
+import csv
+from IPython.core.interactiveshell import InteractiveShell
+InteractiveShell.ast_node_interactivity = "all"
+from splender import splender
+clear = lambda: os.system('cls')
+game = splender()
+Round = 0
+player=0
+type_play=2
+with open('qtablespen150new.json') as f:
+    q = json.load(f)
+def legal_moves(board):
+    print(type(board))
+    listdata=np.asarray(np.where(board == 0)).flatten()
+    print(listdata)
+    return np.asarray(np.where(board == 0)).flatten()
+def new_q(q, moves):
+    new_q = [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0]
+    for i in range(len(q)):
+        if i not in moves:
+            new_q[i] = -200
+        else:
+            new_q[i] = q[i]
+    return new_q
+while(True):
+        Round+=1
+        clear_output(wait=True)
+        if Round%2 == 0 :
+                player = 2
+        elif Round%2 == 1 :
+                player = 1
+        print("Round : {} Player : {} || ".format(math.ceil(Round/2),player))
+        game.open_card_buy()
+        if(game.score_P1>=10):
+                time.sleep(5)
+                clear()
+                clear_output(wait=True)
+                print("Round : {}".format(math.ceil(Round/2)))
+                print("Score_P1 : {}".format(game.score_P1))
+                print("Score_P2 : {}".format(game.score_P2))
+                print("Player 1 is Win")
+                break
+        elif game.score_P2>=10:
+                time.sleep(5)
+                clear()
+                clear_output(wait=True)
+                print("Round : {}".format(math.ceil(Round/2)))
+                print("Score_P1 : {}".format(game.score_P1))
+                print("Score_P2 : {}".format(game.score_P2))
+                print("Player 2 is Win")
+                break
+        if type_play == 2 :
+            if player == 1:
+                print("Bot")
+                listaction=[]
+                listaction.append("GEM")
+                list_buy_card=game.check_buy_card(player)
+                #print(len(list_buy_card))
+
+                legal_moves = legal_moves(np.array(game.open_used))
+                cardbuy = np.argmax(new_q(q[str(game.open_used)], legal_moves))
+
+                game.show_field()
+                if(len(list_buy_card)>0):
+                    listaction.append("BUY")
+                else:
+                    listaction.append("GEM")
+                print(listaction)
+                action=random.choices(population=listaction,weights=[0.01,0.99])
+                if(action[0]=="BUY"):
+                    game.action_buy(player,cardbuy)
+                else:
+                    game.action_gem(player,cardbuy,"bot")
+                print("Player {} Action {} ".format(str(player),action[0]))
+                time.sleep(1)
+                clear_output(wait=True)
+                print("Round : {} Player : {} || ".format(math.ceil(Round/2),player))
+                print("Player {} Last Action {} ".format(str(player),action[0]))
+                game.show_field()
+                time.sleep(1)
+            elif player == 2:
+                clear()
+                clear_output(wait=True)
+                while(True):
+                    list_buy_card=game.check_buy_card(player)
+                    if(len(list_buy_card)>0):
+                        print("[0] : BUY")
+                    print("[1] : GEM")
+                    action_type = int(input("เลือก ACTION: "))
+                    if(action_type==1 or action_type==0):
+                        if(len(list_buy_card)>0 and action_type==0):
+                            break
+                        elif(len(list_buy_card)<=0 and action_type==0):
+                            clear_output(wait=True)
+                        else:
+                            break
+                    else:
+                        clear_output(wait=True)
+                if action_type ==0:
+                    while(True):
+                        clear()
+                        clear_output(wait=True)
+                        game.show_field()
+                        buy_id = int(input("เลือก ID: "))
+                        re_turn=game.action_buy(player,buy_id)
+                        if re_turn != False:
+                            break
+                elif action_type ==1:
+                    i=0
+                    while(True):
+                        if i==2:
+                            break
+                        else:
+                            clear()
+                            clear_output(wait=True)
+                            game.show_field()
+                            gem_id = int(input("เลือก GEM: "))
+                            if gem_id == 0 or gem_id == 1 or gem_id==2:
+                                re_turn1=game.action_gem(player,gem_id,type_play)
+                                if re_turn1!=False:
+                                    i+=1

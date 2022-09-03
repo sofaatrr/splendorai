@@ -40,7 +40,7 @@ class splender :
                 return "GREEN"
             else:
                 return "NULL"
-        print("the remaining gems\nred = {} blue = {} green = {}".format(self.gem[0],self.gem[1],self.gem[2]))
+        print("GEM RED[0] = {} BLUE[1] = {} GREEN[2] = {}".format(self.gem[0],self.gem[1],self.gem[2]))
         print("------------------------------")
         print("Cards on the field")
         print("Level 1 : ")
@@ -48,21 +48,21 @@ class splender :
             if self.open_card[i] == 1:
                 if self.card[i]["level"] == "1":
                     freegem=check_free(self.card[i]["red_free"],self.card[i]["blue_free"],self.card[i]["green_free"])
-                    print("CARD {} || PAY red = {} blue = {} green = {} || Bonus = {}  || Score = {}".format(self.card[i]["namecard"],self.card[i]["red_buy"],self.card[i]["blue_buy"],self.card[i]["green_buy"],freegem,self.card[i]["score"]))
+                    print("ID [{}] || CARD {} || PAY red = {} blue = {} green = {} || Bonus = {}  || Score = {}".format(self.card[i]["id"],self.card[i]["namecard"],self.card[i]["red_buy"],self.card[i]["blue_buy"],self.card[i]["green_buy"],freegem,self.card[i]["score"]))
         print("------------------------------")
         print("Level 2 : ")
         for i in range(len(self.open_card)):
             if self.open_card[i] == 1:
                 if self.card[i]["level"] == "2":
                     freegem=check_free(self.card[i]["red_free"],self.card[i]["blue_free"],self.card[i]["green_free"])
-                    print("CARD {} || PAY red = {} blue = {} green = {} || Bonus = {}  || Score = {}".format(self.card[i]["namecard"],self.card[i]["red_buy"],self.card[i]["blue_buy"],self.card[i]["green_buy"],freegem,self.card[i]["score"]))
+                    print("ID [{}] || CARD {} || PAY red = {} blue = {} green = {} || Bonus = {}  || Score = {}".format(self.card[i]["id"],self.card[i]["namecard"],self.card[i]["red_buy"],self.card[i]["blue_buy"],self.card[i]["green_buy"],freegem,self.card[i]["score"]))
         print("------------------------------")
         print("Level 3 : ")
         for i in range(len(self.open_card)):
             if self.open_card[i] == 1:
                 if self.card[i]["level"] == "3":
                     freegem=check_free(self.card[i]["red_free"],self.card[i]["blue_free"],self.card[i]["green_free"])
-                    print("CARD {} || PAY red = {} blue = {} green = {} || Bonus = {}  || Score = {}".format(self.card[i]["namecard"],self.card[i]["red_buy"],self.card[i]["blue_buy"],self.card[i]["green_buy"],freegem,self.card[i]["score"]))
+                    print("ID [{}] || CARD {} || PAY red = {} blue = {} green = {} || Bonus = {}  || Score = {}".format(self.card[i]["id"],self.card[i]["namecard"],self.card[i]["red_buy"],self.card[i]["blue_buy"],self.card[i]["green_buy"],freegem,self.card[i]["score"]))
         print("-------------Score--------------")
         #print("score of the 1st player : ",self.score_P1)
         #print("score of the 2st player : ",self.score_P2)
@@ -82,7 +82,6 @@ class splender :
             if self.gem[choose]-1>=0:
                 self.gem_P2[choose]+=1
                 self.gem[choose]=self.gem[choose]-1
-                i=i+1
                 print("เลือก GEM {}".format(choose))
             else:
                 return False
@@ -91,9 +90,9 @@ class splender :
             gemweight=[0,0,0]
             for i in range(len(self.open_card)):
                 if self.open_card[i] == 1:
-                    gemboard[0]+=int(self.card[i]["red_buy"])
-                    gemboard[1]+=int(self.card[i]["blue_buy"])
-                    gemboard[2]+=int(self.card[i]["green_buy"])
+                    gemboard[0]+=(int(self.card[i]["red_buy"])/int(self.card[i]["level"]))
+                    gemboard[1]+=(int(self.card[i]["blue_buy"])/int(self.card[i]["level"]))
+                    gemboard[2]+=(int(self.card[i]["green_buy"])/int(self.card[i]["level"]))
             total = np.sum(gemboard)
             if idcard != "random" and idcard !=-1:
                 if int(self.card[idcard]["red_buy"])>=1:
@@ -114,9 +113,9 @@ class splender :
             gemweight=[0,0,0]
             for i in range(len(self.open_card)):
                 if self.open_card[i] == 1:
-                    gemboard[0]+=int(self.card[i]["red_buy"])
-                    gemboard[1]+=int(self.card[i]["blue_buy"])
-                    gemboard[2]+=int(self.card[i]["green_buy"])
+                    gemboard[0]+=(int(self.card[i]["red_buy"])/int(self.card[i]["level"]))
+                    gemboard[1]+=(int(self.card[i]["red_buy"])/int(self.card[i]["level"]))
+                    gemboard[2]+=(int(self.card[i]["red_buy"])/int(self.card[i]["level"]))
             total = np.sum(gemboard)
             if idcard != "random" and idcard !=-1:
                 if int(self.card[idcard]["red_buy"])>=1:
@@ -259,9 +258,9 @@ class splender :
         else:
             return False
     def open_card_buy(self):
-        l1=0
-        l2=0
-        l3=0
+        l1=1
+        l2=1
+        l3=1
         filtter_usercard_l1=[]
         filtter_usercard_l2=[]
         filtter_usercard_l3=[]
