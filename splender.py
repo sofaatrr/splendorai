@@ -21,6 +21,8 @@ class splender :
         self.open_card = [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0]
         self.card_p1 = [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0]
         self.card_p2 =[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0]
+        self.score_tran_P1 = 0
+        self.score_tran_P2 = 0
         self.score_P1 = 0
         self.score_P2 = 0
         self.gem_P1=[0,0,0]
@@ -62,10 +64,10 @@ class splender :
                     freegem=check_free(self.card[i]["red_free"],self.card[i]["blue_free"],self.card[i]["green_free"])
                     print("CARD {} || PAY red = {} blue = {} green = {} || Bonus = {}  || Score = {}".format(self.card[i]["namecard"],self.card[i]["red_buy"],self.card[i]["blue_buy"],self.card[i]["green_buy"],freegem,self.card[i]["score"]))
         print("-------------Score--------------")
-        print("score of the 1st player : ",self.score_P1)
-        print("score of the 2st player : ",self.score_P2)
-        print("USED CARD : {}".format(self.open_used))
-        print("OPEN CARD : {}".format(self.open_card))
+        #print("score of the 1st player : ",self.score_P1)
+        #print("score of the 2st player : ",self.score_P2)
+        #print("USED CARD : {}".format(self.open_used))
+        #print("OPEN CARD : {}".format(self.open_card))
         print("------------- 1st player--------------")
         print("GEM:: RED = {} BLUE = {} GREEN = {}".format(str(self.gem_P1[0]),str(self.gem_P1[1]),str(self.gem_P1[2])))
         print("GEM BONUS :: RED = {} BLUE = {} GREEN = {}".format(str(self.gem_bonus_P1[0]),str(self.gem_bonus_P1[1]),str(self.gem_bonus_P1[2])))
@@ -93,7 +95,7 @@ class splender :
                     gemboard[1]+=int(self.card[i]["blue_buy"])
                     gemboard[2]+=int(self.card[i]["green_buy"])
             total = np.sum(gemboard)
-            if idcard != "random":
+            if idcard != "random" and idcard !=-1:
                 if int(self.card[idcard]["red_buy"])>=1:
                     gemboard[0]+=total/2
                 elif int(self.card[idcard]["blue_buy"])>=1:
@@ -116,7 +118,7 @@ class splender :
                     gemboard[1]+=int(self.card[i]["blue_buy"])
                     gemboard[2]+=int(self.card[i]["green_buy"])
             total = np.sum(gemboard)
-            if idcard != "random":
+            if idcard != "random" and idcard !=-1:
                 if int(self.card[idcard]["red_buy"])>=1:
                     gemboard[0]+=total/2
                 elif int(self.card[idcard]["blue_buy"])>=1:
@@ -194,7 +196,7 @@ class splender :
             gem_player[2]+=self.gem_P2[2]+self.gem_bonus_P2[2]
         if self.open_used[choose]==0 and self.open_card[choose]==1:
             pay_gem=[int(self.card[choose]["red_buy"]),int(self.card[choose]["blue_buy"]),int(self.card[choose]["green_buy"])]
-            print(pay_gem)
+            #print(pay_gem)
             pay_gem[0]=pay_gem[0]-gem_player[0]
             pay_gem[1]=pay_gem[1]-gem_player[1]
             pay_gem[2]=pay_gem[2]-gem_player[2]
@@ -224,8 +226,6 @@ class splender :
                     self.gem_bonus_P1[1]+=int(self.card[choose]["blue_free"])
                     self.gem_bonus_P1[2]+=int(self.card[choose]["green_free"])
                     self.score_P1+=int(self.card[choose]["score"])
-                    if self.score_P1>=10:
-                        self.score_P1+=100
                     #print(pay_gem)
                     print("BUY {}".format(self.card[choose]["namecard"]))
                     #print("the gems\nred = {} blue = {} green = {}".format(self.gem_P1[0],self.gem_P1[1],self.gem_P1[2]))
@@ -253,8 +253,6 @@ class splender :
                     self.gem_bonus_P2[1]+=int(self.card[choose]["blue_free"])
                     self.gem_bonus_P2[2]+=int(self.card[choose]["green_free"])
                     self.score_P2+=int(self.card[choose]["score"])
-                    if self.score_P2>=10:
-                        self.score_P2+=100
                     print("BUY {}".format(self.card[choose]["namecard"]))
             else:
                 return False
