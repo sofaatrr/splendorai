@@ -81,8 +81,9 @@ def random_play():
                                         listaction.append("GEM")
                                 print(listaction)
                                 action=random.choices(population=listaction,weights=[0.2,0.8])
+                                id_buy=random.choice(list_buy_card)
                                 if(action[0]=="BUY"):
-                                        id_buy=random.choice(list_buy_card)
+                                        
                                         game.action_buy(player,id_buy)
                                         if not(np.array_equal(game.old_open_used, game.open_used)):
                                                 if player==1:
@@ -91,7 +92,7 @@ def random_play():
                                                         updateQ(game.old_open_used, id_buy, game.open_used, game.score_P1)
                                         #sp.show_field()
                                 else:
-                                        game.action_gem(player,"random")
+                                        game.action_gem(player,id_buy,"random")
                                 #print("Player {} Action {} ".format(str(player),action[0]))
                                 Round+=1
                                 #time.sleep(5)

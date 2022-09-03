@@ -224,6 +224,8 @@ class splender :
                     self.gem_bonus_P1[1]+=int(self.card[choose]["blue_free"])
                     self.gem_bonus_P1[2]+=int(self.card[choose]["green_free"])
                     self.score_P1+=int(self.card[choose]["score"])
+                    if self.score_P1>=10:
+                        self.score_P1+=100
                     #print(pay_gem)
                     print("BUY {}".format(self.card[choose]["namecard"]))
                     #print("the gems\nred = {} blue = {} green = {}".format(self.gem_P1[0],self.gem_P1[1],self.gem_P1[2]))
@@ -251,6 +253,8 @@ class splender :
                     self.gem_bonus_P2[1]+=int(self.card[choose]["blue_free"])
                     self.gem_bonus_P2[2]+=int(self.card[choose]["green_free"])
                     self.score_P2+=int(self.card[choose]["score"])
+                    if self.score_P2>=10:
+                        self.score_P2+=100
                     print("BUY {}".format(self.card[choose]["namecard"]))
             else:
                 return False
