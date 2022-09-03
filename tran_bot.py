@@ -17,7 +17,7 @@ def random_play():
         rewards = np.array([])
         games = [splender() for i in range(5000)]
         #     Hyperparameters
-        epsilon = 1
+        epsilon = 0
         epsilon_min = 0.05
         epsilon_decay = 0.999997
         gamma = 0.9
@@ -33,6 +33,7 @@ def random_play():
                 #print("q_value : {}".format(q_value[a]))
                 q[str(s)] = q_value
         for game in games:
+                epsilon+=1
                 Round = 1
                 player=0
                 game.open_card_buy()
@@ -44,6 +45,7 @@ def random_play():
                                 player = 2
                         elif Round%2 == 1 :
                                 player = 1
+                        print("Epsilon : {}".format(epsilon))
                         print("Round : {} || Player : {}".format(math.ceil(Round/2),player))
                         print("Score_P1 : {}".format(game.score_P1))
                         print("Score_P2 : {}".format(game.score_P2))
