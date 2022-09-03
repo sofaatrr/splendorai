@@ -15,7 +15,7 @@ type_play=1
 def random_play():
         q = defaultdict(lambda: [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0])
         rewards = np.array([])
-        games = [splender() for i in range(2)]
+        games = [splender() for i in range(5000)]
         #     Hyperparameters
         epsilon = 1
         epsilon_min = 0.05
@@ -98,7 +98,7 @@ def random_play():
                                 #print("Player {} Last Action {} ".format(str(player),action[0]))
                                 #sp.show_field()
                                 time.sleep(1)
-        fo = open("qtablespen.json", "w")
+        fo = open("qtablespen5000.json", "w")
         json.dump(q, fo)
         fo.close()
         return q
