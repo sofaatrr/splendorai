@@ -14,10 +14,11 @@ clear = lambda: os.system('cls')
 type_play=1
 def random_play():
         q = defaultdict(lambda: [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0])
-        #with open('splender.json') as f:
-                #q = json.load(f)
+        with open('qtablespen150gem350.json') as f:
+                q_ai = json.load(f)
+        q.update(q_ai)
         rewards = np.array([])
-        games = [splender() for i in range(150)]
+        games = [splender() for i in range(350)]
         #     Hyperparameters
         epsilon = 1
         epsilon_min = 0.05
@@ -36,7 +37,7 @@ def random_play():
                 #print("q_value : {}".format(q_value[a]))
                 q[str(s)] = q_value
         def check_reward(id_buy,player,ep):
-                score=int(game.card[id_buy]["score"])
+                score=int(game.card[id_buy]["score"])+1
                 if player == 1:
                         if game.score_P1+score>=10:
                                 return ((game.score_P1+score)/ep)+100
@@ -66,6 +67,7 @@ def random_play():
                         clear()
                         print("Epsilon : {}".format(ep))
                         print("Round : {} || Player : {}".format(math.ceil(Round/2),player))
+                        print("-------------Score--------------")
                         print("AI Score_P1 : {}".format(game.score_P1))
                         print("Random Score_P2 : {}".format(game.score_P2))
                         game.show_field()
@@ -124,7 +126,7 @@ def random_play():
                                         elif player ==2:
                                                 id_buy=-1
                                 print(listaction)
-                                action=random.choices(population=listaction,weights=[0.2,0.8])
+                                action=random.choices(population=listaction,weights=[0.05,0.95])
                                                 
                                 if(action[0]=="BUY"):
                                         game.action_buy(player,id_buy)
@@ -146,7 +148,7 @@ def random_play():
                                 showpage()
                                 if (epsilon > epsilon_min):
                                         epsilon *= epsilon_decay
-        fo = open("qtablespen150gem.json", "w")
+        fo = open("qtablespen150gem350-2.json", "w")
         json.dump(q, fo)
         fo.close()
         return q

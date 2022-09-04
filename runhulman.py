@@ -17,11 +17,12 @@ player=0
 type_play=2
 with open('qtablespen150new.json') as f:
     q = json.load(f)
-def legal_moves(board):
-    print(type(board))
-    listdata=np.asarray(np.where(board == 0)).flatten()
-    print(listdata)
-    return np.asarray(np.where(board == 0)).flatten()
+def legal_move(board):
+    #print(type(board))
+    #print(board)
+    listdata=np.asarray(np.where(np.array(board) == 0)).flatten()
+    #print(listdata)
+    return listdata
 def new_q(q, moves):
     new_q = [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0]
     for i in range(len(q)):
@@ -39,11 +40,21 @@ while(True):
                 player = 1
         print("Round : {} Player : {} || ".format(math.ceil(Round/2),player))
         game.open_card_buy()
+        def showpage():
+            clear_output(wait=True)
+            clear()
+            print("Round : {} || Player : {}".format(math.ceil(Round/2),player))
+            print("-------------Score--------------")
+            print("AI Score_P1 : {}".format(game.score_P1))
+            print("Hulman Score_P2 : {}".format(game.score_P2))
+            game.show_field()
+        showpage()
         if(game.score_P1>=10):
                 time.sleep(5)
                 clear()
                 clear_output(wait=True)
                 print("Round : {}".format(math.ceil(Round/2)))
+                print("-------------Score--------------")
                 print("Score_P1 : {}".format(game.score_P1))
                 print("Score_P2 : {}".format(game.score_P2))
                 print("Player 1 is Win")
@@ -53,6 +64,7 @@ while(True):
                 clear()
                 clear_output(wait=True)
                 print("Round : {}".format(math.ceil(Round/2)))
+                print("-------------Score--------------")
                 print("Score_P1 : {}".format(game.score_P1))
                 print("Score_P2 : {}".format(game.score_P2))
                 print("Player 2 is Win")
@@ -64,11 +76,18 @@ while(True):
                 listaction.append("GEM")
                 list_buy_card=game.check_buy_card(player)
                 #print(len(list_buy_card))
+                legal_moves = legal_move(game.open_used)
+                
+                try:
+                    print(q[str(game.open_used)])
+                    cardbuy = np.argmax(new_q(q[str(game.open_used)], legal_moves))
+                except KeyError:
+                    if(len(list_buy_card)>0):
+                        cardbuy=random.choice(list_buy_card)
+                    else:
+                        cardbuy=-1
 
-                legal_moves = legal_moves(np.array(game.open_used))
-                cardbuy = np.argmax(new_q(q[str(game.open_used)], legal_moves))
-
-                game.show_field()
+                showpage()
                 if(len(list_buy_card)>0):
                     listaction.append("BUY")
                 else:
@@ -81,34 +100,21 @@ while(True):
                     game.action_gem(player,cardbuy,"bot")
                 print("Player {} Action {} ".format(str(player),action[0]))
                 time.sleep(1)
-                clear_output(wait=True)
-                print("Round : {} Player : {} || ".format(math.ceil(Round/2),player))
-                print("Player {} Last Action {} ".format(str(player),action[0]))
-                game.show_field()
-                time.sleep(1)
             elif player == 2:
-                clear()
-                clear_output(wait=True)
                 while(True):
+                    showpage()
                     list_buy_card=game.check_buy_card(player)
                     if(len(list_buy_card)>0):
                         print("[0] : BUY")
                     print("[1] : GEM")
                     action_type = int(input("เลือก ACTION: "))
                     if(action_type==1 or action_type==0):
-                        if(len(list_buy_card)>0 and action_type==0):
-                            break
-                        elif(len(list_buy_card)<=0 and action_type==0):
-                            clear_output(wait=True)
-                        else:
-                            break
+                        break
                     else:
                         clear_output(wait=True)
                 if action_type ==0:
                     while(True):
-                        clear()
-                        clear_output(wait=True)
-                        game.show_field()
+                        showpage()
                         buy_id = int(input("เลือก ID: "))
                         re_turn=game.action_buy(player,buy_id)
                         if re_turn != False:
@@ -119,9 +125,7 @@ while(True):
                         if i==2:
                             break
                         else:
-                            clear()
-                            clear_output(wait=True)
-                            game.show_field()
+                            showpage()
                             gem_id = int(input("เลือก GEM: "))
                             if gem_id == 0 or gem_id == 1 or gem_id==2:
                                 re_turn1=game.action_gem(player,gem_id,type_play)
