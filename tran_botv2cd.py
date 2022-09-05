@@ -22,7 +22,7 @@ def random_play():
                 q_ai = json.load(f)
         q.update(q_ai)
         rewards = np.array([])
-        games = [splender() for i in range(50)]
+        games = [splender() for i in range(5)]
         #     Hyperparameters
         epsilon = 1
         epsilon_min = 0.05
@@ -80,8 +80,8 @@ def random_play():
                 player=0
                 select_gem_p1=1
                 select_gem_p2=1
-                needid_buy=0
-                
+                needid_buy_p1=0
+                needid_buy_p2=0
                 count_buy_p1=0
                 count_buy_p2=0
                 #randomeps=random.uniform(0, 1)
@@ -111,6 +111,19 @@ def random_play():
                                 gem_player[1]+=game.gem_P2[1]+game.gem_bonus_P2[1]
                                 gem_player[2]+=game.gem_P2[2]+game.gem_bonus_P2[2]
                         return gem_player
+                def check_select_card(player):
+                        list_card=[]
+                        for i in range(len(game.open_card)):
+                                if game.open_card[i] == 1:
+                                        gem_player=getgem_playe(player)
+                                        pay_gem=np.array([int(game.card[i]["red_buy"]),int(game.card[i]["blue_buy"]),int(game.card[i]["green_buy"])])
+                                        pay_gem[0]=pay_gem[0]-gem_player[0]
+                                        pay_gem[1]=pay_gem[1]-gem_player[1]
+                                        pay_gem[2]=pay_gem[2]-gem_player[2]
+                                        pay_gem[pay_gem < 0] = 0
+                                        if np.sum(pay_gem)<=6:
+                                                list_card.append(i)
+                        return list_card
                 row_history_p1={}
                 row_history_p2={}
                 while(True):
@@ -169,51 +182,64 @@ def random_play():
                                                 print(card_open_ck)
                                                 id_buy = np.argmax(new_q(q[str(game.card_p1)], card_open_ck))
                                                 print("Need BUY {}".format(game.card[id_buy]["namecard"]))
-                                                if needid_buy>0 and needid_buy in card_open_ck:
-                                                        if needid_buy in list_buy_card:
+                                                if needid_buy_p1>=0 and needid_buy_p1 in card_open_ck:
+                                                        if needid_buy_p1 in list_buy_card:
                                                                 listaction.append("BUY")
-                                                                needid_buy=0         
+                                                                id_buy=needid_buy_p1 
+                                                                needid_buy_p1=-1        
                                                         else:
                                                                 listaction.append("GEM")
-                                                                id_buy=needid_buy             
+                                                                id_buy=needid_buy_p1             
                                                 else:
-                                                        if id_buy not in list_buy_card:
-                                                                if(len(list_buy_card)>0):
-                                                                        gem_player=getgem_playe(player)
-                                                                        pay_gem=np.array([int(game.card[id_buy]["red_buy"]),int(game.card[id_buy]["blue_buy"]),int(game.card[id_buy]["green_buy"])])
-                                                                        pay_gem[0]=pay_gem[0]-gem_player[0]
-                                                                        pay_gem[1]=pay_gem[1]-gem_player[1]
-                                                                        pay_gem[2]=pay_gem[2]-gem_player[2]
-                                                                        pay_gem[pay_gem < 0] = 0
-                                                                        gemcheck=pay_gem[0]+pay_gem[1]+pay_gem[2]
-                                                                        if gemcheck<=4:
-                                                                                listaction.append("GEM")
-                                                                                needid_buy=id_buy
-                                                                        else:
-                                                                                listaction.append("AI RANDOM BUY")
-                                                                                id_buy=random.choice(list_buy_card)
+                                                        if(len(list_buy_card)>0):
+                                                                if id_buy in list_buy_card:
+                                                                        listaction.append("BUY")
+                                                                        needid_buy_p1=-1
                                                                 else:
                                                                         listaction.append("GEM")
-                                                                        id_buy=-1
+                                                                        needid_buy_p1=id_buy
                                                         else:
-                                                                listaction.append("BUY")
+                                                                list_select_card=check_select_card(player)
+                                                                if id_buy in list_select_card:
+                                                                        needid_buy_p1=id_buy
+                                                                        listaction.append("GEM")
+                                                                else:
+                                                                        id_buy=random.choice(list_select_card)
+                                                                        needid_buy_p1=id_buy
+                                                                        listaction.append("GEM")
 
                                         else:
                                                 row_history_p1['Type']="Random"
-                                                if(len(list_buy_card)>0):
-                                                        listaction.append("BUY")
-                                                        id_buy=random.choice(list_buy_card)
+                                                card_open_ck=check_opencard(game.open_card)
+                                                if needid_buy_p1>=0 and needid_buy_p1 in card_open_ck:
+                                                        if needid_buy_p1 in list_buy_card:
+                                                                listaction.append("BUY")
+                                                                id_buy=needid_buy_p1 
+                                                                needid_buy_p1=-1
+                                                        else:
+                                                                id_buy=needid_buy_p1
+                                                                listaction.append("GEM")
                                                 else:
+                                                        list_select_card=check_select_card(player)
+                                                        id_buy=random.choice(list_select_card)
+                                                        needid_buy_p1=id_buy
                                                         listaction.append("GEM")
-                                                        id_buy=-1
                                 elif player==2:
                                         row_history_p2['Type']="Random"
-                                        if(len(list_buy_card)>0):
-                                                listaction.append("BUY")
-                                                id_buy=random.choice(list_buy_card)
+                                        card_open_ck=check_opencard(game.open_card)
+                                        if needid_buy_p2>=0 and needid_buy_p2 in card_open_ck:
+                                                        if needid_buy_p2 in list_buy_card:
+                                                                listaction.append("BUY")
+                                                                id_buy=needid_buy_p2 
+                                                                needid_buy_p2=0
+                                                        else:
+                                                                id_buy=needid_buy_p2
+                                                                listaction.append("GEM")
                                         else:
+                                                list_select_card=check_select_card(player)
+                                                id_buy=random.choice(list_select_card)
                                                 listaction.append("GEM")
-                                                id_buy=-1
+                                                
                                 print(listaction)
                                 action=random.choices(population=listaction,weights=[0.001,0.999])
                                                 
