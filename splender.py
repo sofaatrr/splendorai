@@ -93,33 +93,35 @@ class splender :
         def getgem_playe(player):
             gem_player=[0,0,0]
             if player==1:
-                gem_player[0]+=self.gem_P1[0]+self.gem_bonus_P1[0]
-                gem_player[1]+=self.gem_P1[1]+self.gem_bonus_P1[1]
-                gem_player[2]+=self.gem_P1[2]+self.gem_bonus_P1[2]
+                gem_player[0]=self.gem_P1[0]+self.gem_bonus_P1[0]
+                gem_player[1]=self.gem_P1[1]+self.gem_bonus_P1[1]
+                gem_player[2]=self.gem_P1[2]+self.gem_bonus_P1[2]
             elif player==2:
-                gem_player[0]+=self.gem_P2[0]+self.gem_bonus_P2[0]
-                gem_player[1]+=self.gem_P2[1]+self.gem_bonus_P2[1]
-                gem_player[2]+=self.gem_P2[2]+self.gem_bonus_P2[2]
+                gem_player[0]=self.gem_P2[0]+self.gem_bonus_P2[0]
+                gem_player[1]=self.gem_P2[1]+self.gem_bonus_P2[1]
+                gem_player[2]=self.gem_P2[2]+self.gem_bonus_P2[2]
             return gem_player
         def getmaxgem(idcard,player):
             gemboard=[0,0,0]
             gemweight=[0,0,0]
             gem_player=getgem_playe(player)
-            if idcard!=-1:
+            if idcard==-1:
+                pay_gem=np.array([1,1,1])
+            else:
                 pay_gem=np.array([int(self.card[idcard]["red_buy"]),int(self.card[idcard]["blue_buy"]),int(self.card[idcard]["green_buy"])])
                 pay_gem[0]=pay_gem[0]-gem_player[0]
                 pay_gem[1]=pay_gem[1]-gem_player[1]
                 pay_gem[2]=pay_gem[2]-gem_player[2]
-                pay_gem[pay_gem < 0] = 1
+                pay_gem[pay_gem <= 0] = 1 #!ลืมใส่เท่ากับเฉย
                 print(pay_gem)
-            else:
-                pay_gem=np.array([1,1,1])
+            
             for i in range(len(self.open_card)):
                 if self.open_card[i] == 1:
                     gemboard[0]+=(int(self.card[i]["red_buy"])/int(self.card[i]["level"]))
                     gemboard[1]+=(int(self.card[i]["blue_buy"])/int(self.card[i]["level"]))
                     gemboard[2]+=(int(self.card[i]["green_buy"])/int(self.card[i]["level"]))
             total = np.sum(gemboard)
+
             if idcard != "random" and idcard !=-1:
                 if int(self.card[idcard]["red_buy"])>=1:
                     gemboard[0]+=(pay_gem[0]*total)
@@ -127,28 +129,27 @@ class splender :
                     gemboard[1]+=(pay_gem[1]*total)
                 elif int(self.card[idcard]["green_buy"])>=1:
                     gemboard[2]+=(pay_gem[2]*total)
+            
             gemweight[0]=gemboard[0]/total
             gemweight[1]=gemboard[1]/total
             gemweight[2]=gemboard[2]/total
             print("WIGHT RED {} BLUE {} GREEN {}".format(gemweight[0],gemweight[1],gemweight[2]))
-            #print(gemweight[0])
-            #print(gemweight[1])
-            #print(gemweight[2])
+
             if player==1 and idcard!=-1:
                 pickgem=[np.argmax(gemweight)]
-                #print(pickgem)
+                print(pickgem)
                 if self.gem[pickgem[0]]-1>=0:
                     return pickgem
                 else:
-                    gemweight[pickgem[0]]=0
+                    gemweight[np.argmax(gemweight)]=0
                     pickgem=[np.argmax(gemweight)]
-                    #print(pickgem)
+                    print(pickgem)
                     if self.gem[pickgem[0]]-1>=0:
                         return pickgem
                     else:
-                        gemweight[pickgem[0]]=0
+                        gemweight[np.argmax(gemweight)]=0
                         pickgem=[np.argmax(gemweight)]
-                        #print(pickgem)
+                        print(pickgem)
                         return pickgem  
             else:
                 return random.choices(population=[0,1,2],weights=gemweight)
@@ -156,20 +157,22 @@ class splender :
             gemboard=[0,0,0]
             gemweight=[0,0,0]
             gem_player=getgem_playe(player)
-            if idcard!=-1:
+            if idcard==-1:
+                pay_gem=np.array([1,1,1])
+            else:
                 pay_gem=np.array([int(self.card[idcard]["red_buy"]),int(self.card[idcard]["blue_buy"]),int(self.card[idcard]["green_buy"])])
                 pay_gem[0]=pay_gem[0]-gem_player[0]
                 pay_gem[1]=pay_gem[1]-gem_player[1]
                 pay_gem[2]=pay_gem[2]-gem_player[2]
-                pay_gem[pay_gem < 0] = 1
-            else:
-                pay_gem=np.array([1,1,1])
+                pay_gem[pay_gem <= 0] = 1
+                
             for i in range(len(self.open_card)):
                 if self.open_card[i] == 1:
                     gemboard[0]+=(int(self.card[i]["red_buy"])/int(self.card[i]["level"]))
                     gemboard[1]+=(int(self.card[i]["blue_buy"])/int(self.card[i]["level"]))
                     gemboard[2]+=(int(self.card[i]["green_buy"])/int(self.card[i]["level"]))
             total = np.sum(gemboard)
+
             if idcard != "random" and idcard !=-1:
                 if int(self.card[idcard]["red_buy"])>=1:
                     gemboard[0]+=(pay_gem[0]*total)
@@ -178,25 +181,27 @@ class splender :
                 elif int(self.card[idcard]["green_buy"])>=1:
                     gemboard[2]+=(pay_gem[2]*total)
                 total = np.sum(gemboard)
+            
             gemweight[0]=total-(gemboard[0]/total)
             gemweight[1]=total-(gemboard[1]/total)
             gemweight[2]=total-(gemboard[2]/total)
             print("WIGHT RED {} BLUE {} GREEN {}".format(gemweight[0],gemweight[1],gemweight[2]))
-            #print(gemweight[0])
-            #print(gemweight[1])
-            #print(gemweight[2])
-            if player==1 and idcard!=-1:
+
+            if player==1 and idcard!=-1: #ผิดตรงนี้
                 pickgem=[np.argmax(gemweight)]
                 if self.gem_P1[pickgem[0]]-1>=0:
+                    print(pickgem)
                     return pickgem
                 else:
-                    gemweight[pickgem[0]]=0
+                    gemweight[np.argmax(gemweight)]=0
                     pickgem=[np.argmax(gemweight)]
                     if self.gem_P1[pickgem[0]]-1>=0:
+                        print(pickgem)
                         return pickgem
                     else:
-                        gemweight[pickgem[0]]=0
+                        gemweight[np.argmax(gemweight)]=0
                         pickgem=[np.argmax(gemweight)]
+                        print(pickgem)
                         return pickgem 
             else:
                 return random.choices(population=[0,1,2],weights=gemweight)

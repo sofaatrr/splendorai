@@ -24,8 +24,8 @@ def random_play():
         epsilon = 1
         epsilon_min = 0.05
         epsilon_decay = 0.9
-        timesleep=1
-        timelook=10
+        timesleep=0
+        timelook=0
         ep=0
         winp1=0
         winp2=0
