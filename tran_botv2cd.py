@@ -18,17 +18,17 @@ def random_play():
         q = defaultdict(lambda: [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0])
         sheet_history = pd.read_excel('histrory.xlsx',sheet_name='Sheet1',index_col=[0])
         
-        with open('qtable-trainv3-ep4-400-600.json') as f:
-                q_ai = json.load(f)
-        q.update(q_ai)
+        #with open('qtable-trainv3-ep4-400-600.json') as f:
+                #q_ai = json.load(f)
+        #q.update(q_ai)
         rewards = np.array([])
-        games = [splender() for i in range(5)]
+        games = [splender() for i in range(2000)]
         #     Hyperparameters
         epsilon = 1
         epsilon_min = 0.05
         epsilon_decay = 0.999
-        timesleep=1
-        timelook=1
+        timesleep=0
+        timelook=0
         ep=0
         winp1=0
         winp2=0
@@ -96,18 +96,19 @@ def random_play():
                         print("AI Score_P1 : {}".format(game.score_P1))
                         print("Random Score_P2 : {}".format(game.score_P2))
                         game.show_field()
-                def getgem_playe(player):
-                        gem_player=[0,0,0]
-                        if player==1:
-                                gem_player[0]+=game.gem_P1[0]+game.gem_bonus_P1[0]
-                                gem_player[1]+=game.gem_P1[1]+game.gem_bonus_P1[1]
-                                gem_player[2]+=game.gem_P1[2]+game.gem_bonus_P1[2]
-                        elif player==2:
-                                gem_player[0]+=game.gem_P2[0]+game.gem_bonus_P2[0]
-                                gem_player[1]+=game.gem_P2[1]+game.gem_bonus_P2[1]
-                                gem_player[2]+=game.gem_P2[2]+game.gem_bonus_P2[2]
-                        return gem_player
+                
                 def check_select_card(player):
+                        def getgem_playe(player):
+                                gem_player=[0,0,0]
+                                if player==1:
+                                        gem_player[0]+=game.gem_P1[0]+game.gem_bonus_P1[0]
+                                        gem_player[1]+=game.gem_P1[1]+game.gem_bonus_P1[1]
+                                        gem_player[2]+=game.gem_P1[2]+game.gem_bonus_P1[2]
+                                elif player==2:
+                                        gem_player[0]+=game.gem_P2[0]+game.gem_bonus_P2[0]
+                                        gem_player[1]+=game.gem_P2[1]+game.gem_bonus_P2[1]
+                                        gem_player[2]+=game.gem_P2[2]+game.gem_bonus_P2[2]
+                                return gem_player
                         list_card=[]
                         for i in range(len(game.open_card)):
                                 if game.open_card[i] == 1:
@@ -150,7 +151,8 @@ def random_play():
 
                         game.open_card_buy()
                         showpage()
-                        if(game.score_P1>=10):
+
+                        if(game.score_P1>=10 and Round%2 == 0 and game.score_P1>game.score_P2 and np.sum(game.card_p1)>np.sum(game.card_p2)):
                                 
                                 clear()
                                 clear_output(wait=True)
@@ -161,7 +163,7 @@ def random_play():
                                 winp1+=1
                                 time.sleep(timesleep)
                                 break
-                        elif game.score_P2>=10:
+                        elif (game.score_P2>=10 and Round%2 == 0 and game.score_P2>game.score_P1 and np.sum(game.card_p2)>np.sum(game.card_p1)):
                                 
                                 clear()
                                 clear_output(wait=True)
@@ -172,6 +174,25 @@ def random_play():
                                 winp2+=1
                                 time.sleep(timesleep)
                                 break
+                        elif (game.score_P1>=10 and game.score_P2>=10 and Round%2 == 0 and game.score_P2 == game.score_P1 and np.sum(game.card_p2)==np.sum(game.card_p1)):
+                                clear()
+                                clear_output(wait=True)
+                                print("Round : {}".format(math.ceil(Round/2)))
+                                print("Score_P1 : {}".format(game.score_P1))
+                                print("Score_P2 : {}".format(game.score_P2))
+                                print("Player 1 = Player 2")
+                                time.sleep(timesleep)
+                                break
+                        elif len(game.open_card)<=0:
+                                clear()
+                                clear_output(wait=True)
+                                print("Round : {}".format(math.ceil(Round/2)))
+                                print("Score_P1 : {}".format(game.score_P1))
+                                print("Score_P2 : {}".format(game.score_P2))
+                                print("Player 1 = Player 2")
+                                time.sleep(timesleep)
+                                break
+                               
                         if type_play == 1 :
                                 print("Player {}".format(player))
                                 listaction=[]
@@ -326,9 +347,11 @@ def random_play():
                                 showpage()
                 if (epsilon > epsilon_min):
                         epsilon *= epsilon_decay
-        fo = open("qtable-trainv3-ep4-400-600.json", "w")
-        json.dump(q, fo)
-        fo.close()
+        if ep%200 == 0 :
+                namef="qtable-trainv4-ep1-2000-"+str(ep)+".json"
+                fo = open(namef, "w")
+                json.dump(q, fo)
+                fo.close()
         sheet_history.to_excel('histrory.xlsx')
         return q
 random_play()

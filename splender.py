@@ -90,18 +90,19 @@ class splender :
                 print("เลือก GEM {}".format(choose))
             else:
                 return False
-        def getgem_playe(player):
-            gem_player=[0,0,0]
-            if player==1:
-                gem_player[0]=self.gem_P1[0]+self.gem_bonus_P1[0]
-                gem_player[1]=self.gem_P1[1]+self.gem_bonus_P1[1]
-                gem_player[2]=self.gem_P1[2]+self.gem_bonus_P1[2]
-            elif player==2:
-                gem_player[0]=self.gem_P2[0]+self.gem_bonus_P2[0]
-                gem_player[1]=self.gem_P2[1]+self.gem_bonus_P2[1]
-                gem_player[2]=self.gem_P2[2]+self.gem_bonus_P2[2]
-            return gem_player
+        
         def getmaxgem(idcard,player):
+            def getgem_playe(player):
+                gem_player=[0,0,0]
+                if player==1:
+                    gem_player[0]=self.gem_P1[0]+self.gem_bonus_P1[0]
+                    gem_player[1]=self.gem_P1[1]+self.gem_bonus_P1[1]
+                    gem_player[2]=self.gem_P1[2]+self.gem_bonus_P1[2]
+                elif player==2:
+                    gem_player[0]=self.gem_P2[0]+self.gem_bonus_P2[0]
+                    gem_player[1]=self.gem_P2[1]+self.gem_bonus_P2[1]
+                    gem_player[2]=self.gem_P2[2]+self.gem_bonus_P2[2]
+                return gem_player
             gemboard=[0,0,0]
             gemweight=[0,0,0]
             gem_player=getgem_playe(player)
@@ -156,9 +157,32 @@ class splender :
             else:
                 return random.choices(population=[0,1,2],weights=gemweight)
         def getmingem(idcard,player):
+            def getgem_playe(player):
+                gem_player=[0,0,0]
+                if player==1:
+                    gem_player[0]=self.gem_P1[0]+self.gem_bonus_P1[0]
+                    gem_player[1]=self.gem_P1[1]+self.gem_bonus_P1[1]
+                    gem_player[2]=self.gem_P1[2]+self.gem_bonus_P1[2]
+                elif player==2:
+                    gem_player[0]=self.gem_P2[0]+self.gem_bonus_P2[0]
+                    gem_player[1]=self.gem_P2[1]+self.gem_bonus_P2[1]
+                    gem_player[2]=self.gem_P2[2]+self.gem_bonus_P2[2]
+                return gem_player
+            def getgem_playe_only(player):
+                gem_player=[0,0,0]
+                if player==1:
+                    gem_player[0]=self.gem_P1[0]
+                    gem_player[1]=self.gem_P1[1]
+                    gem_player[2]=self.gem_P1[2]
+                elif player==2:
+                    gem_player[0]=self.gem_P2[0]
+                    gem_player[1]=self.gem_P2[1]
+                    gem_player[2]=self.gem_P2[2]
+                return gem_player
             gemboard=[0,0,0]
             gemweight=[0,0,0]
             gem_player=getgem_playe(player)
+            gem_player_only=getgem_playe_only(player)
             #print(gem_player)
             if idcard==-1:
                 pay_gem=np.array([1,1,1])
@@ -196,21 +220,28 @@ class splender :
 
             if idcard!=-1: #ผิดตรงนี้
                 pickgem=[np.argmax(gemweight)]
-
-                if gem_player[pickgem[0]]-1>=0:
-                    #print(pickgem)
+                print("L1")
+                print(pickgem)
+                print(gem_player_only[pickgem[0]])
+                if gem_player_only[pickgem[0]]-1>=0:
+                    
+                    print("WIGHT RED {} BLUE {} GREEN {}".format(gemweight[0],gemweight[1],gemweight[2]))
                     return pickgem
                 else:
-                    gemweight[np.argmax(gemweight)]=0
+                    gemweight[pickgem[0]]=0
                     pickgem=[np.argmax(gemweight)]
-                    
-                    if gem_player[pickgem[0]]-1>=0:
-                        #print(pickgem)
+                    print("L2")
+                    print(pickgem)
+                    if gem_player_only[pickgem[0]]-1>=0:
+                        
+                        print("WIGHT RED {} BLUE {} GREEN {}".format(gemweight[0],gemweight[1],gemweight[2]))
                         return pickgem
                     else:
-                        gemweight[np.argmax(gemweight)]=0 
+                        gemweight[pickgem[0]]=0 
                         pickgem=[np.argmax(gemweight)]
-                        #print(pickgem)
+                        print("L3")
+                        print(pickgem)
+                        print("WIGHT RED {} BLUE {} GREEN {}".format(gemweight[0],gemweight[1],gemweight[2]))
                         return pickgem
             else:
                 return random.choices(population=[0,1,2],weights=gemweight)
@@ -218,7 +249,6 @@ class splender :
             if player==1 and np.sum(self.gem_P1)>=5 and player_type=="bot":
                 i=0
                 while i <= 1:
-
                     pickgem=getmingem(idcard,player)
                     if self.gem_P1[pickgem[0]]-1>=0: 
                         self.gem_P1[pickgem[0]]=self.gem_P1[pickgem[0]]-1
