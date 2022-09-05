@@ -10,21 +10,23 @@ import csv
 from IPython.core.interactiveshell import InteractiveShell
 InteractiveShell.ast_node_interactivity = "all"
 from splender import splender
+import pandas as pd
 clear = lambda: os.system('cls')
 type_play=1
 
 def random_play():
         q = defaultdict(lambda: [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0])
-        with open('qtable-trainv3-ep4-400.json') as f:
+        sheet_history = pd.read_excel('histrory.xlsx', sheet_name=1)
+        with open('qtable-trainv3-ep4-400-600.json') as f:
                 q_ai = json.load(f)
         q.update(q_ai)
         rewards = np.array([])
-        games = [splender() for i in range(600)]
+        games = [splender() for i in range(1000)]
         #     Hyperparameters
         epsilon = 1
         epsilon_min = 0.05
-        epsilon_decay = 0.99
-        timesleep=2
+        epsilon_decay = 0.999
+        timesleep=0
         timelook=0
         ep=0
         winp1=0
@@ -78,14 +80,12 @@ def random_play():
                 select_gem_p1=1
                 select_gem_p2=1
                 needid_buy=0
-                row_history={}
+                row_history_p1={}
+                row_history_p2={}
                 count_buy_p1=0
                 count_buy_p2=0
-                #randomeps=random.uniform(0, 1)
-                randomeps=0
-
-                row_history['Round']=Round
-                
+                randomeps=random.uniform(0, 1)
+                #randomeps=0
                 
                 game.open_card_buy()
                 def showpage():
@@ -114,14 +114,18 @@ def random_play():
                 while(True):
                         if Round%2 == 0 :
                                 player = 2
-                                row_history['Turn']=Turn_P2
+                                row_history_p2['Turn']=Turn_P2
+                                row_history_p2['Player']=player
+                                row_history_p2['Round']=Round
                                 Turn_P2+=1
                         elif Round%2 == 1 :
                                 player = 1
-                                row_history['Turn']=Turn_P1
+                                row_history_p1['Turn']=Turn_P1
+                                row_history_p1['Player']=player
+                                row_history_p1['Round']=Round
                                 Turn_P1+=1
                         
-                        row_history['Player']=player
+                        
 
                         game.open_card_buy()
                         showpage()
@@ -208,13 +212,18 @@ def random_play():
                                 if(action[0]=="BUY"):
                                         print("BUY")
                                         game.action_buy(player,id_buy)
+                                        
                                         if player==1:
-                                                
+                                                count_buy_p1+=1
+                                                row_history_p1['Card '+str(count_buy_p1)]=game.card[id_buy]["namecard"]
+
                                                 if not(np.array_equal(game.old_card_P1, game.card_p1)):
                                                         updateQ(game.old_card_P1, id_buy, game.card_p1, check_reward(id_buy,player,select_gem_p1))
                                                 select_gem_p1=1
                                         elif player==2:
-                                                
+                                                count_buy_p2+=1
+                                                row_history_p2['Card '+str(count_buy_p2)]=game.card[id_buy]["namecard"]
+
                                                 if not(np.array_equal(game.old_card_P2, game.card_p2)):
                                                         updateQ(game.old_card_P2, id_buy, game.card_p2, check_reward(id_buy,player,select_gem_p2))
                                                 select_gem_p2=1
