@@ -15,22 +15,23 @@ type_play=1
 
 def random_play():
         q = defaultdict(lambda: [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0])
-        #with open('qtable-trainv3-ep1-200.json') as f:
-        #        q_ai = json.load(f)
-        #q.update(q_ai)
+        with open('qtable-trainv3-ep4-400.json') as f:
+                q_ai = json.load(f)
+        q.update(q_ai)
         rewards = np.array([])
-        games = [splender() for i in range(400)]
+        games = [splender() for i in range(600)]
         #     Hyperparameters
         epsilon = 1
         epsilon_min = 0.05
-        epsilon_decay = 0.9
-        timesleep=0
+        epsilon_decay = 0.99
+        timesleep=2
         timelook=0
         ep=0
         winp1=0
         winp2=0
         gamma = 0.9
         alpha = 0.1
+        history = []
         def updateQ(s, a, new_s, r):
                 q_value = q[str(s)].copy()
                 q_value_a=q_value[a]
@@ -45,14 +46,14 @@ def random_play():
                 score=int(game.card[id_buy]["score"])
                 if player == 1:
                         if game.score_P1+score>=10:
-                                return ((game.score_P1+score)/ep)+100
+                                return (score-ep)+100
                         else:
-                                return ((game.score_P1+score)/ep)
+                                return (score-ep)
                 elif player == 2:
                         if game.score_P2+score>=10:
-                                return ((game.score_P2+score)/ep)+100
+                                return (score-ep)+100
                         else:
-                                return ((game.score_P2+score)/ep)
+                                return (score-ep)
         def new_q(q, moves):
             new_q = [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0]
             for i in range(len(q)):
@@ -71,9 +72,21 @@ def random_play():
         for game in games:
                 ep+=1
                 Round = 1
+                Turn_P1=1
+                Turn_P2=1
                 player=0
                 select_gem_p1=1
                 select_gem_p2=1
+                needid_buy=0
+                row_history={}
+                count_buy_p1=0
+                count_buy_p2=0
+                #randomeps=random.uniform(0, 1)
+                randomeps=0
+
+                row_history['Round']=Round
+                
+                
                 game.open_card_buy()
                 def showpage():
                         clear_output(wait=True)
@@ -101,8 +114,15 @@ def random_play():
                 while(True):
                         if Round%2 == 0 :
                                 player = 2
+                                row_history['Turn']=Turn_P2
+                                Turn_P2+=1
                         elif Round%2 == 1 :
                                 player = 1
+                                row_history['Turn']=Turn_P1
+                                Turn_P1+=1
+                        
+                        row_history['Player']=player
+
                         game.open_card_buy()
                         showpage()
                         if(game.score_P1>=10):
@@ -132,36 +152,42 @@ def random_play():
                                 listaction=[]
                                 listaction.append("GEM")
                                 list_buy_card=game.check_buy_card(player)
-                                #print(len(list_buy_card))
-                                #game.show_field()
-                                if player ==1:
-                                        
-                                        randomeps=random.uniform(0, 1)
-                                        #print("Random {} / epsilon {}".format(randomeps,epsilon))
+                                if player==1:
                                         card_open_ck=check_opencard(game.open_card)
                                         print(new_q(q[str(game.card_p1)], card_open_ck))
                                         if (randomeps > epsilon):
                                                 print(card_open_ck)
                                                 id_buy = np.argmax(new_q(q[str(game.card_p1)], card_open_ck))
                                                 print("Need BUY {}".format(game.card[id_buy]["namecard"]))
-                                                if id_buy not in list_buy_card:
-                                                        if(len(list_buy_card)>0):
-                                                                gem_player=getgem_playe(player)
-                                                                pay_gem=np.array([int(game.card[id_buy]["red_buy"]),int(game.card[id_buy]["blue_buy"]),int(game.card[id_buy]["green_buy"])])
-                                                                pay_gem[0]=pay_gem[0]-gem_player[0]
-                                                                pay_gem[1]=pay_gem[1]-gem_player[1]
-                                                                pay_gem[2]=pay_gem[2]-gem_player[2]
-                                                                pay_gem[pay_gem < 0] = 0
-                                                                gemcheck=pay_gem[0]+pay_gem[1]+pay_gem[2]
-                                                                if gemcheck<=2:
-                                                                        listaction.append("GEM")
-                                                                else:
-                                                                        listaction.append("BUY")
-                                                                        id_buy=random.choice(list_buy_card)
+                                                if needid_buy>0 and needid_buy in card_open_ck:
+                                                        if needid_buy not in list_buy_card:
+                                                                listaction.append("BUY")
+                                                                needid_buy=0
                                                         else:
                                                                 listaction.append("GEM")
+                                                                id_buy=needid_buy
                                                 else:
-                                                        listaction.append("BUY")  
+                                                        if id_buy not in list_buy_card:
+                                                                if(len(list_buy_card)>0):
+                                                                        gem_player=getgem_playe(player)
+                                                                        pay_gem=np.array([int(game.card[id_buy]["red_buy"]),int(game.card[id_buy]["blue_buy"]),int(game.card[id_buy]["green_buy"])])
+                                                                        pay_gem[0]=pay_gem[0]-gem_player[0]
+                                                                        pay_gem[1]=pay_gem[1]-gem_player[1]
+                                                                        pay_gem[2]=pay_gem[2]-gem_player[2]
+                                                                        pay_gem[pay_gem < 0] = 0
+                                                                        gemcheck=pay_gem[0]+pay_gem[1]+pay_gem[2]
+                                                                        if gemcheck<=4:
+                                                                                listaction.append("GEM")
+                                                                                needid_buy=id_buy
+                                                                        else:
+                                                                                listaction.append("AI RANDOM BUY")
+                                                                                id_buy=random.choice(list_buy_card)
+                                                                else:
+                                                                        listaction.append("GEM")
+                                                                        needid_buy=id_buy
+                                                        else:
+                                                                listaction.append("BUY")
+
                                         else:
                                                 if(len(list_buy_card)>0):
                                                         listaction.append("BUY")
@@ -169,7 +195,7 @@ def random_play():
                                                 else:
                                                         listaction.append("GEM")
                                                         id_buy=-1
-                                elif player ==2:
+                                elif player==2:
                                         if(len(list_buy_card)>0):
                                                 listaction.append("BUY")
                                                 id_buy=random.choice(list_buy_card)
@@ -192,7 +218,6 @@ def random_play():
                                                 if not(np.array_equal(game.old_card_P2, game.card_p2)):
                                                         updateQ(game.old_card_P2, id_buy, game.card_p2, check_reward(id_buy,player,select_gem_p2))
                                                 select_gem_p2=1
-                                        #sp.show_field()
                                 else:
                                         print("GEM")
                                         game.action_gem(player,id_buy,"bot")
@@ -203,17 +228,12 @@ def random_play():
                                         elif player==2:
                                                 select_gem_p2+=1                
 
-                                #print("Player {} Action {} ".format(str(player),action[0]))
                                 Round+=1
-                                #time.sleep(5)
-                                #clear_output(wait=True)
-                                #print("Round : {} Player : {} || ".format(math.ceil(Round/2),player))
-                                #print("Player {} Last Action {} ".format(str(player),action[0]))
                                 time.sleep(timesleep)
                                 showpage()
                 if (epsilon > epsilon_min):
                         epsilon *= epsilon_decay
-        fo = open("qtable-trainv3-ep4-400.json", "w")
+        fo = open("qtable-trainv3-ep4-400-600.json", "w")
         json.dump(q, fo)
         fo.close()
         return q

@@ -205,11 +205,7 @@ class splender :
                         return pickgem 
             else:
                 return random.choices(population=[0,1,2],weights=gemweight)
-        if (np.sum(self.gem)<2) :
-            print("Not enough gems")
-            return False
-        else:
-            #------------------------------------- ทิ้ง gem
+        def action_del(player):
             if player==1 and np.sum(self.gem_P1)>=5 and player_type=="bot":
                 i=0
                 while i <= 1:
@@ -219,9 +215,8 @@ class splender :
                         self.gem_P1[pickgem[0]]-=1
                         self.gem[pickgem[0]]=self.gem[pickgem[0]]+1
                         i=i+1
-                        print("ทิ้ง GEM {}".format(pickgem[0]))
-                        #print("the เหลือ\nred = {} blue = {} green = {}".format(self.gem[0],self.gem[1],self.gem[2]))
-                        #print("the มี\nred = {} blue = {} green = {}".format(self.gem_P1[0],self.gem_P1[1],self.gem_P1[2]))
+                        print("DEL GEM {}".format(pickgem[0]))
+                        
             elif player==2 and np.sum(self.gem_P2)>=5 and player_type=="bot":
                 i=0
                 while i <= 1:
@@ -230,45 +225,47 @@ class splender :
                         self.gem_P2[pickgem[0]]-=1
                         self.gem[pickgem[0]]=self.gem[pickgem[0]]+1
                         i=i+1
-                        print("ทิ้ง GEM {}".format(pickgem[0]))
-                        #print("the เหลือ\nred = {} blue = {} green = {}".format(self.gem[0],self.gem[1],self.gem[2]))
-                        #print("the มี\nred = {} blue = {} green = {}".format(self.gem_P2[0],self.gem_P2[1],self.gem_P2[2]))
-            #------------------------------------- เลือก gem
-            if player==1 and player_type=="bot":
-                i=0
-                while i <= 1:
-                    pickgem=getmaxgem(choose,player)
-                    if self.gem[pickgem[0]]-1>=0:
-                        self.gem_P1[pickgem[0]]+=1
-                        self.gem[pickgem[0]]=self.gem[pickgem[0]]-1
-                        i=i+1
-                        print("เลือก GEM {}".format(pickgem[0]))
-                        #print("เหลือ\nred = {} blue = {} green = {}".format(self.gem[0],self.gem[1],self.gem[2]))
-                        #print(" มี\nred = {} blue = {} green = {}".format(self.gem_P1[0],self.gem_P1[1],self.gem_P1[2]))
-            elif player==2 and player_type=="bot":
-                i=0
-                while i <= 1:
-                    pickgem=getmaxgem(choose,player)
-                    if self.gem[pickgem[0]]-1>=0:
-                        self.gem_P2[pickgem[0]]+=1
-                        self.gem[pickgem[0]]=self.gem[pickgem[0]]-1
-                        i=i+1
-                        print("เลือก GEM {}".format(pickgem[0]))
-                        #print("เหลือ\nred = {} blue = {} green = {}".format(self.gem[0],self.gem[1],self.gem[2]))
-                        #print("มี\nred = {} blue = {} green = {}".format(self.gem_P2[0],self.gem_P2[1],self.gem_P2[2]))
+                        print("DEL GEM {}".format(pickgem[0]))
+        if (np.sum(self.gem)<2) :
+            print("Not enough gems")
+            action_del(player)
+            return False
+        #------------------------------------- ทิ้ง gem
+        action_del(player)      
+        #------------------------------------- เลือก gem
+        if player==1 and player_type=="bot":
+            i=0
+            while i <= 1:
+                pickgem=getmaxgem(choose,player)
+                if self.gem[pickgem[0]]-1>=0:
+                    self.gem_P1[pickgem[0]]+=1
+                    self.gem[pickgem[0]]=self.gem[pickgem[0]]-1
+                    i=i+1
+                    print("PICK GEM {}".format(pickgem[0]))
+                        
+        elif player==2 and player_type=="bot":
+            i=0
+            while i <= 1:
+                pickgem=getmaxgem(choose,player)
+                if self.gem[pickgem[0]]-1>=0:
+                    self.gem_P2[pickgem[0]]+=1
+                    self.gem[pickgem[0]]=self.gem[pickgem[0]]-1
+                    i=i+1
+                    print("PICK GEM {}".format(pickgem[0]))
+                        
     def action_buy(self, player, choose):
         gem_player=[0,0,0]
         if player==1:
-            gem_player[0]+=self.gem_P1[0]+self.gem_bonus_P1[0]
-            gem_player[1]+=self.gem_P1[1]+self.gem_bonus_P1[1]
-            gem_player[2]+=self.gem_P1[2]+self.gem_bonus_P1[2]
+            gem_player[0]=self.gem_P1[0]+self.gem_bonus_P1[0]
+            gem_player[1]=self.gem_P1[1]+self.gem_bonus_P1[1]
+            gem_player[2]=self.gem_P1[2]+self.gem_bonus_P1[2]
         elif player==2:
-            gem_player[0]+=self.gem_P2[0]+self.gem_bonus_P2[0]
-            gem_player[1]+=self.gem_P2[1]+self.gem_bonus_P2[1]
-            gem_player[2]+=self.gem_P2[2]+self.gem_bonus_P2[2]
+            gem_player[0]=self.gem_P2[0]+self.gem_bonus_P2[0]
+            gem_player[1]=self.gem_P2[1]+self.gem_bonus_P2[1]
+            gem_player[2]=self.gem_P2[2]+self.gem_bonus_P2[2]
         if self.open_used[choose]==0 and self.open_card[choose]==1:
             pay_gem=[int(self.card[choose]["red_buy"]),int(self.card[choose]["blue_buy"]),int(self.card[choose]["green_buy"])]
-            #print(pay_gem)
+            
             pay_gem[0]=pay_gem[0]-gem_player[0]
             pay_gem[1]=pay_gem[1]-gem_player[1]
             pay_gem[2]=pay_gem[2]-gem_player[2]
@@ -300,10 +297,7 @@ class splender :
                     self.gem_bonus_P1[1]+=int(self.card[choose]["blue_free"])
                     self.gem_bonus_P1[2]+=int(self.card[choose]["green_free"])
                     self.score_P1+=int(self.card[choose]["score"])
-                    #print(pay_gem)
                     print("BUY {}".format(self.card[choose]["namecard"]))
-                    #print("the gems\nred = {} blue = {} green = {}".format(self.gem_P1[0],self.gem_P1[1],self.gem_P1[2]))
-                    #print("the bonus\nred = {} blue = {} green = {}".format(self.gem_bonus_P1[0],self.gem_bonus_P1[1],self.gem_bonus_P1[2]))
                 elif player==2:
                     self.card_p2[choose]=1
                     difgem=[0,0,0]
@@ -333,9 +327,9 @@ class splender :
         else:
             return False
     def open_card_buy(self):
-        l1=1
-        l2=1
-        l3=1
+        l1=0
+        l2=0
+        l3=0
         filtter_usercard_l1=[]
         filtter_usercard_l2=[]
         filtter_usercard_l3=[]
@@ -357,21 +351,21 @@ class splender :
                 elif self.card[i]["level"] == "3":
                     if self.open_used[i] ==0:
                         filtter_usercard_l3.append(i)    
-        while l1 <= 4:
+        while l1 < 4:
             if(len(filtter_usercard_l1)>0):
                 x = random.choice(filtter_usercard_l1)
                 self.open_card[x]=1
                 l1+=1
             else:
                 break
-        while l2 <= 4:
+        while l2 < 4:
             if(len(filtter_usercard_l2)>0):
                 x = random.choice(filtter_usercard_l2)
                 self.open_card[x]=1
                 l2+=1
             else:
                 break
-        while l3 <= 4:
+        while l3 < 4:
             if(len(filtter_usercard_l3)>0):
                 x = random.choice(filtter_usercard_l3)
                 self.open_card[x]=1
@@ -392,7 +386,6 @@ class splender :
         for i in range(len(self.open_card)):
             if self.open_card[i] == 1:
                 pay_gem=[int(self.card[i]["red_buy"]),int(self.card[i]["blue_buy"]),int(self.card[i]["green_buy"])]
-                #print(pay_gem)     
                 pay_gem[0]=pay_gem[0]-gem_player[0]
                 pay_gem[1]=pay_gem[1]-gem_player[1]
                 pay_gem[2]=pay_gem[2]-gem_player[2]
