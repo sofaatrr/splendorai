@@ -18,25 +18,22 @@ def random_play():
         q = defaultdict(lambda: [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0])
         sheet_history = pd.read_excel('histrory.xlsx',sheet_name='Sheet1',index_col=[0])
         
-        #with open('qtable-trainv4-ep1-2000-200.json') as f:
-                #q_ai = json.load(f)
-        #q.update(q_ai)
+        with open('qtable-trainv4-ep1-2000-200.json') as f:
+                q_ai = json.load(f)
+        q.update(q_ai)
         rewards = np.array([])
-        games = [splender() for i in range(1000)]
+        games = [splender() for i in range(100)]
         ep=0
         #     Hyperparameters
         epsilon = 1
         epsilon_min = 0.05
-        epsilon_decay = 0.999
-        for i in range(ep):
-                epsilon=epsilon*epsilon_decay   
+        epsilon_decay = 0.999  
         timesleep=0
         timelook=0
         winp1=0
         winp2=0
         gamma = 0.9
         alpha = 0.1
-        history = []
         def updateQ(s, a, new_s, r):
                 q_value = q[str(s)].copy()
                 q_value_a=q_value[a]
@@ -82,8 +79,8 @@ def random_play():
                 
                 count_buy_p1=0
                 count_buy_p2=0
-                randomeps=random.uniform(0, 1)
-                #randomeps=1
+                #randomeps=random.uniform(0, 1)
+                randomeps=1
                 
                 game.open_card_buy()
                 def showpage():
@@ -152,7 +149,7 @@ def random_play():
                         game.open_card_buy()
                         showpage()
                         #print(len(game.open_card))
-                        if(game.score_P1>=10 and Round%2 == 0 and game.score_P1>game.score_P2 and np.sum(game.card_p1)>np.sum(game.card_p2)):
+                        if(game.score_P1>=10 and Round%2 == 0 and (game.score_P1>=game.score_P2 or np.sum(game.card_p1)>np.sum(game.card_p2))):
                                 
                                 clear()
                                 clear_output(wait=True)
@@ -163,7 +160,7 @@ def random_play():
                                 winp1+=1
                                 time.sleep(timesleep)
                                 break
-                        elif (game.score_P2>=10 and Round%2 == 0 and game.score_P2>game.score_P1 and np.sum(game.card_p2)>np.sum(game.card_p1)):
+                        elif (game.score_P2>=10 and Round%2 == 0 and (game.score_P2>game.score_P1 or np.sum(game.card_p2)>np.sum(game.card_p1))):
                                 
                                 clear()
                                 clear_output(wait=True)
@@ -205,8 +202,8 @@ def random_play():
                                 listaction.append("GEM")
                                 id_buy=-1
                                 if player==1:
-                                        if select_gem_p1 >=3:
-                                                #select_gem_p1=1
+                                        if select_gem_p1 >=10:
+                                                select_gem_p1=1
                                                 needid_buy_p1=-1
                                         list_buy_card=game.check_buy_card(player)
                                         card_open_ck=check_opencard(game.open_card)
@@ -273,8 +270,8 @@ def random_play():
                                                                 print("Need BUY {}".format(game.card[id_buy]["namecard"]))
                                                                 listaction.append("GEM")
                                 elif player==2:
-                                        if select_gem_p2 >=3:
-                                                #select_gem_p2=1
+                                        if select_gem_p2 >=10:
+                                                select_gem_p2=1
                                                 needid_buy_p2=-1
                                         list_buy_card=game.check_buy_card(player)
                                         row_history_p2['Type']="Random"
