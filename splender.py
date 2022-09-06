@@ -103,8 +103,8 @@ class splender :
                     gem_player[1]=self.gem_P2[1]+self.gem_bonus_P2[1]
                     gem_player[2]=self.gem_P2[2]+self.gem_bonus_P2[2]
                 return gem_player
-            gemboard=[0,0,0]
-            gemweight=[0,0,0]
+            gemboard=np.array([0,0,0])
+            gemweight=np.array([0,0,0])
             gem_player=getgem_playe(player)
             #print(gem_player)
             if idcard==-1:
@@ -133,9 +133,10 @@ class splender :
                 gemboard[1]+=(pay_gem[1]*total)
                 gemboard[2]+=(pay_gem[2]*total)
             #print(gemboard)
-            gemweight[0]=gemboard[0]/total
-            gemweight[1]=gemboard[1]/total
-            gemweight[2]=gemboard[2]/total
+            gemweight[0]=gemboard[0]
+            gemweight[1]=gemboard[1]
+            gemweight[2]=gemboard[2]
+            gemweight[gemweight <= 0] = 0.01
             #print("WIGHT RED {} BLUE {} GREEN {}".format(gemweight[0],gemweight[1],gemweight[2]))
 
             if idcard!=-1:
@@ -219,9 +220,9 @@ class splender :
                 gemboard[2]+=(pay_gem[2]*total)
                 total = np.sum(gemboard)
             
-            gemweight[0]=total-(gemboard[0]/total)
-            gemweight[1]=total-(gemboard[1]/total)
-            gemweight[2]=total-(gemboard[2]/total)
+            gemweight[0]=(total+gemboard[0])/total
+            gemweight[1]=(total+gemboard[1])/total
+            gemweight[2]=(total+gemboard[2])/total
             #print("WIGHT RED {} BLUE {} GREEN {}".format(gemweight[0],gemweight[1],gemweight[2]))
 
             if idcard!=-1: #ผิดตรงนี้
