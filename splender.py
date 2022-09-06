@@ -149,11 +149,17 @@ class splender :
                     #print(pickgem)
                     if self.gem[pickgem[0]]-1>=0:
                         return pickgem
-                    else:
+                    else :
                         gemweight[np.argmax(gemweight)]=0
                         pickgem=[np.argmax(gemweight)]
-                        #print(pickgem)
-                        return pickgem  
+                        if self.gem[pickgem[0]]-1>=0:
+                            return pickgem
+                        else:
+                            print("RAMDOM GEM")
+                            time.sleep(30)
+                            return random.choices(population=[0,1,2],weights=gemweight)
+                            
+                        
             else:
                 return random.choices(population=[0,1,2],weights=gemweight)
         def getmingem(idcard,player):
@@ -224,7 +230,6 @@ class splender :
                 #print(pickgem)
                 #print(gem_player_only[pickgem[0]])
                 if gem_player_only[pickgem[0]]-1>=0:
-                    
                     #print("WIGHT RED {} BLUE {} GREEN {}".format(gemweight[0],gemweight[1],gemweight[2]))
                     return pickgem
                 else:
