@@ -351,11 +351,11 @@ def random_play():
                                 showpage()
                 if (epsilon > epsilon_min):
                         epsilon *= epsilon_decay
-        if ep%200 == 0 :
-                namef="qtable-trainv4-ep1-2000-"+str(ep)+".json"
-                fo = open(namef, "w")
-                json.dump(q, fo)
-                fo.close()
+                if ep%200 == 0 :
+                        namef="qtable-trainv4-ep1-2000-"+str(ep)+".json"
+                        fo = open(namef, "w")
+                        json.dump(q, fo)
+                        fo.close()
         sheet_history.to_excel('histrory.xlsx')
         return q
 random_play()
