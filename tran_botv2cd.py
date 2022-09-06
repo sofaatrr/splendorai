@@ -18,18 +18,20 @@ def random_play():
         q = defaultdict(lambda: [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0])
         sheet_history = pd.read_excel('histrory.xlsx',sheet_name='Sheet1',index_col=[0])
         
-        #with open('qtable-trainv3-ep4-400-600.json') as f:
+        #with open('qtable-trainv4-ep1-2000-200.json') as f:
                 #q_ai = json.load(f)
         #q.update(q_ai)
         rewards = np.array([])
-        games = [splender() for i in range(2000)]
+        games = [splender() for i in range(1000)]
+        ep=0
         #     Hyperparameters
         epsilon = 1
         epsilon_min = 0.05
         epsilon_decay = 0.999
+        for i in range(ep):
+                epsilon=epsilon*epsilon_decay   
         timesleep=0
         timelook=0
-        ep=0
         winp1=0
         winp2=0
         gamma = 0.9
@@ -189,6 +191,12 @@ def random_play():
                                 print("Score_P2 : {}".format(game.score_P2))
                                 print("Player 1 = Player 2")
                                 time.sleep(timesleep)
+                                break
+                        elif Round>50:
+                                print("Round : {}".format(math.ceil(Round/2)))
+                                print("Score_P1 : {}".format(game.score_P1))
+                                print("Score_P2 : {}".format(game.score_P2))
+                                print("Player 1 = Player 2")
                                 break
                                
                         if type_play == 1 :

@@ -136,7 +136,7 @@ class splender :
             gemweight[0]=gemboard[0]
             gemweight[1]=gemboard[1]
             gemweight[2]=gemboard[2]
-            gemweight[gemweight <= 0] = 0.01
+            
             #print("WIGHT RED {} BLUE {} GREEN {}".format(gemweight[0],gemweight[1],gemweight[2]))
 
             if idcard!=-1:
@@ -156,8 +156,9 @@ class splender :
                         if self.gem[pickgem[0]]-1>=0:
                             return pickgem
                         else:
+                            gemweight[gemweight <= 0] = 1
                             print("RAMDOM GEM")
-                            time.sleep(30)
+                            #time.sleep(30)
                             return random.choices(population=[0,1,2],weights=gemweight)
                             
                         
