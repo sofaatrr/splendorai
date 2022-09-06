@@ -22,7 +22,7 @@ def random_play():
                 q_ai = json.load(f)
         q.update(q_ai)
         rewards = np.array([])
-        games = [splender() for i in range(100)]
+        games = [splender() for i in range(3)]
         ep=0
         #     Hyperparameters
         epsilon = 1
