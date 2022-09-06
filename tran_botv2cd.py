@@ -147,11 +147,9 @@ def random_play():
                                 row_history_p1['EP']=ep
                                 Turn_P1+=1
                         
-                        
-
                         game.open_card_buy()
                         showpage()
-
+                        print(len(game.open_card))
                         if(game.score_P1>=10 and Round%2 == 0 and game.score_P1>game.score_P2 and np.sum(game.card_p1)>np.sum(game.card_p2)):
                                 
                                 clear()
