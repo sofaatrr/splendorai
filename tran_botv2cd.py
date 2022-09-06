@@ -181,7 +181,7 @@ def random_play():
                                 print("Player 1 = Player 2")
                                 time.sleep(timesleep)
                                 break
-                        elif len(game.open_card)==27:
+                        elif len(check_opencard(game.open_card))<=0:
                                 clear()
                                 clear_output(wait=True)
                                 print("Round : {}".format(math.ceil(Round/2)))
@@ -301,7 +301,9 @@ def random_play():
                                                 
                                 #print(listaction)
                                 #action=random.choices(population=listaction,weights=[0.001,0.999])
-                                action=[listaction[len(listaction)-1]]              
+                                #print(listaction)
+                                action=[listaction[len(listaction)-1]]
+                                #print(action)              
                                 if(action[0]=="BUY"):
                                         print("BUY")
                                         game.action_buy(player,id_buy)
