@@ -149,7 +149,7 @@ def random_play():
                         
                         game.open_card_buy()
                         showpage()
-                        print(len(game.open_card))
+                        #print(len(game.open_card))
                         if(game.score_P1>=10 and Round%2 == 0 and game.score_P1>game.score_P2 and np.sum(game.card_p1)>np.sum(game.card_p2)):
                                 
                                 clear()
@@ -181,7 +181,7 @@ def random_play():
                                 print("Player 1 = Player 2")
                                 time.sleep(timesleep)
                                 break
-                        elif len(game.open_card)<=0:
+                        elif len(game.open_card)==27:
                                 clear()
                                 clear_output(wait=True)
                                 print("Round : {}".format(math.ceil(Round/2)))
@@ -202,7 +202,7 @@ def random_play():
                                                 needid_buy_p1=-1
                                         list_buy_card=game.check_buy_card(player)
                                         card_open_ck=check_opencard(game.open_card)
-                                        print(new_q(q[str(game.card_p1)], card_open_ck))
+                                        #print(new_q(q[str(game.card_p1)], card_open_ck))
                                         if (randomeps > epsilon):
                                                 row_history_p1['Type']="Q-Table"
                                                 #print(card_open_ck)
@@ -211,7 +211,8 @@ def random_play():
                                                 if needid_buy_p1>=0 and needid_buy_p1 in card_open_ck:
                                                         if needid_buy_p1 in list_buy_card:
                                                                 listaction.append("BUY")
-                                                                id_buy=needid_buy_p1 
+                                                                id_buy=needid_buy_p1
+                                                                print("Need BUY {}".format(game.card[id_buy]["namecard"])) 
                                                                 needid_buy_p1=-1        
                                                         else:
                                                                 listaction.append("GEM")
@@ -221,6 +222,7 @@ def random_play():
                                                         if(len(list_buy_card)>0):
                                                                 if id_buy in list_buy_card:
                                                                         listaction.append("BUY")
+                                                                        print("Need BUY {}".format(game.card[id_buy]["namecard"]))
                                                                         needid_buy_p1=-1
                                                                 else:
                                                                         listaction.append("GEM")
@@ -245,6 +247,7 @@ def random_play():
                                                         if needid_buy_p1 in list_buy_card:
                                                                 listaction.append("BUY")
                                                                 id_buy=needid_buy_p1 
+                                                                print("Need BUY {}".format(game.card[id_buy]["namecard"]))
                                                                 needid_buy_p1=-1
                                                         else:
                                                                 id_buy=needid_buy_p1
@@ -274,7 +277,8 @@ def random_play():
                                         if needid_buy_p2>=0 and needid_buy_p2 in card_open_ck:
                                                         if needid_buy_p2 in list_buy_card:
                                                                 listaction.append("BUY")
-                                                                id_buy=needid_buy_p2 
+                                                                id_buy=needid_buy_p2
+                                                                print("Need BUY {}".format(game.card[id_buy]["namecard"])) 
                                                                 needid_buy_p2=-1
                                                         else:
                                                                 id_buy=needid_buy_p2
@@ -296,8 +300,8 @@ def random_play():
                                         #print(needid_buy_p2)
                                                 
                                 #print(listaction)
-                                action=random.choices(population=listaction,weights=[0.001,0.999])
-                                                
+                                #action=random.choices(population=listaction,weights=[0.001,0.999])
+                                action=[listaction[len(listaction)-1]]              
                                 if(action[0]=="BUY"):
                                         print("BUY")
                                         game.action_buy(player,id_buy)
