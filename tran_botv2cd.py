@@ -309,7 +309,7 @@ def random_play():
                                         #sheet_history = sheet_history.append(row_history_p2, ignore_index=True)
                                         row_history_p2.clear()
                                 showpage()
-                                if(game.score_P1>=10 and Round%2 == 0 and (game.score_P1>=game.score_P2 or np.sum(game.card_p1)>np.sum(game.card_p2))):
+                                if(game.score_P1>=10 and Round%2 == 0 and game.score_P1>game.score_P2):
                                 
                                         clear()
                                         clear_output(wait=True)
@@ -320,7 +320,7 @@ def random_play():
                                         winp1+=1
                                         time.sleep(timesleep)
                                         break
-                                elif (game.score_P2>=10 and Round%2 == 0 and (game.score_P2>game.score_P1 or np.sum(game.card_p2)>np.sum(game.card_p1))):
+                                elif (game.score_P2>=10 and Round%2 == 0 and game.score_P2>game.score_P1):
                                 
                                         clear()
                                         clear_output(wait=True)
@@ -329,6 +329,26 @@ def random_play():
                                         print("Score_P2 : {}".format(game.score_P2))
                                         print("Player 2 is Win")
                                         winp2+=1
+                                        time.sleep(timesleep)
+                                        break
+                                elif (game.score_P1>=10 and game.score_P2>=10 and Round%2 == 0 and game.score_P2 == game.score_P1 and np.sum(game.card_p2)<np.sum(game.card_p1)):
+                                        clear()
+                                        clear_output(wait=True)
+                                        print("Round : {}".format(math.ceil(Round/2)))
+                                        print("Score_P1 : {}".format(game.score_P1))
+                                        print("Score_P2 : {}".format(game.score_P2))
+                                        print("Player 2 is Win")
+                                        winp2+=1
+                                        time.sleep(timesleep)
+                                        break
+                                elif (game.score_P1>=10 and game.score_P2>=10 and Round%2 == 0 and game.score_P2 == game.score_P1 and np.sum(game.card_p1)<np.sum(game.card_p2)):
+                                        clear()
+                                        clear_output(wait=True)
+                                        print("Round : {}".format(math.ceil(Round/2)))
+                                        print("Score_P1 : {}".format(game.score_P1))
+                                        print("Score_P2 : {}".format(game.score_P2))
+                                        print("Player 1 is Win")
+                                        winp1+=1
                                         time.sleep(timesleep)
                                         break
                                 elif (game.score_P1>=10 and game.score_P2>=10 and Round%2 == 0 and game.score_P2 == game.score_P1 and np.sum(game.card_p2)==np.sum(game.card_p1)):
