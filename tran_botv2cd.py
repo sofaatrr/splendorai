@@ -295,27 +295,17 @@ def random_play():
                                         print("ID BUY {}".format(id_buy))
                                         game.action_gem(player,id_buy,"bot")
                                         if player ==1:
+                                                row_history_p1['Score']=game.score_P1
                                                 select_gem_p1+=1
                                                 if (randomeps > epsilon):
                                                         time.sleep(timelook)
                                         elif player==2:
+                                                row_history_p2['Score']=game.score_P2
                                                 select_gem_p2+=1
                                 
                                 
                                 time.sleep(timesleep)
-                                if(game.score_P1>=10):
-                                        row_history_p1['Win']=1
-                                elif game.score_P2>=10:
-                                        row_history_p2['Win']=1
-                                if player==1:
-                                        df_dictionary = pd.DataFrame([row_history_p1])
-                                        sheet_history = pd.concat([sheet_history, df_dictionary], ignore_index=True)
-                                        row_history_p1.clear()
-                                else:
-                                        df_dictionary = pd.DataFrame([row_history_p2])
-                                        sheet_history = pd.concat([sheet_history, df_dictionary], ignore_index=True)
-                                        #sheet_history = sheet_history.append(row_history_p2, ignore_index=True)
-                                        row_history_p2.clear()
+
                                 showpage()
                                 if(game.score_P1>=10 and Round%2 == 0 and game.score_P1>game.score_P2):
                                 
@@ -326,6 +316,16 @@ def random_play():
                                         print("Score_P2 : {}".format(game.score_P2))
                                         print("Player 1 is Win")
                                         winp1+=1
+                                        
+                                        row_history_p1['Win']=1
+                                        row_history_p2['Win']=0
+                                        df_dictionary = pd.DataFrame([row_history_p1])
+                                        sheet_history = pd.concat([sheet_history, df_dictionary], ignore_index=True)
+                                        df_dictionary2 = pd.DataFrame([row_history_p2])
+                                        sheet_history = pd.concat([sheet_history, df_dictionary2], ignore_index=True)
+                                        row_history_p1.clear()
+                                        row_history_p2.clear()
+
                                         time.sleep(timesleep)
                                         break
                                 elif (game.score_P2>=10 and Round%2 == 0 and game.score_P2>game.score_P1):
@@ -336,6 +336,16 @@ def random_play():
                                         print("Score_P1 : {}".format(game.score_P1))
                                         print("Score_P2 : {}".format(game.score_P2))
                                         print("Player 2 is Win")
+
+                                        row_history_p1['Win']=0
+                                        row_history_p2['Win']=1
+                                        df_dictionary = pd.DataFrame([row_history_p1])
+                                        sheet_history = pd.concat([sheet_history, df_dictionary], ignore_index=True)
+                                        df_dictionary2 = pd.DataFrame([row_history_p2])
+                                        sheet_history = pd.concat([sheet_history, df_dictionary2], ignore_index=True)
+                                        row_history_p1.clear()
+                                        row_history_p2.clear()
+
                                         winp2+=1
                                         time.sleep(timesleep)
                                         break
@@ -347,6 +357,16 @@ def random_play():
                                         print("Score_P2 : {}".format(game.score_P2))
                                         print("Player 2 is Win")
                                         winp2+=1
+
+                                        row_history_p1['Win']=0
+                                        row_history_p2['Win']=1
+                                        df_dictionary = pd.DataFrame([row_history_p1])
+                                        sheet_history = pd.concat([sheet_history, df_dictionary], ignore_index=True)
+                                        df_dictionary2 = pd.DataFrame([row_history_p2])
+                                        sheet_history = pd.concat([sheet_history, df_dictionary2], ignore_index=True)
+                                        row_history_p1.clear()
+                                        row_history_p2.clear()
+
                                         time.sleep(timesleep)
                                         break
                                 elif (game.score_P1>=10 and game.score_P2>=10 and Round%2 == 0 and game.score_P2 == game.score_P1 and np.sum(game.card_p1)<np.sum(game.card_p2)):
@@ -357,6 +377,17 @@ def random_play():
                                         print("Score_P2 : {}".format(game.score_P2))
                                         print("Player 1 is Win")
                                         winp1+=1
+
+                                        row_history_p1['Win']=1
+                                        row_history_p2['Win']=0
+                                        df_dictionary = pd.DataFrame([row_history_p1])
+                                        sheet_history = pd.concat([sheet_history, df_dictionary], ignore_index=True)
+                                        df_dictionary2 = pd.DataFrame([row_history_p2])
+                                        sheet_history = pd.concat([sheet_history, df_dictionary2], ignore_index=True)
+                                        row_history_p1.clear()
+                                        row_history_p2.clear()
+
+
                                         time.sleep(timesleep)
                                         break
                                 elif (game.score_P1>=10 and game.score_P2>=10 and Round%2 == 0 and game.score_P2 == game.score_P1 and np.sum(game.card_p2)==np.sum(game.card_p1)):
@@ -367,6 +398,16 @@ def random_play():
                                         print("Score_P2 : {}".format(game.score_P2))
                                         print("Player 1 = Player 2")
                                         time.sleep(timesleep)
+
+                                        row_history_p1['Win']=0
+                                        row_history_p2['Win']=0
+                                        df_dictionary = pd.DataFrame([row_history_p1])
+                                        sheet_history = pd.concat([sheet_history, df_dictionary], ignore_index=True)
+                                        df_dictionary2 = pd.DataFrame([row_history_p2])
+                                        sheet_history = pd.concat([sheet_history, df_dictionary2], ignore_index=True)
+                                        row_history_p1.clear()
+                                        row_history_p2.clear()
+
                                         break
                                 elif len(check_opencard(game.open_card))<=0:
                                         clear()
@@ -383,11 +424,18 @@ def random_play():
                                         print("Score_P2 : {}".format(game.score_P2))
                                         print("Player 1 = Player 2")
                                         break
+                                elif Round%2 == 0:
+                                        df_dictionary = pd.DataFrame([row_history_p1])
+                                        sheet_history = pd.concat([sheet_history, df_dictionary], ignore_index=True)
+                                        df_dictionary2 = pd.DataFrame([row_history_p2])
+                                        sheet_history = pd.concat([sheet_history, df_dictionary2], ignore_index=True)
+                                        row_history_p1.clear()
+                                        row_history_p2.clear()
                                 Round+=1
                 if (epsilon > epsilon_min):
                         epsilon *= epsilon_decay
                 if ep%200 == 0 :
-                        namef="qtable-trainv4-ep1-2000-"+str(ep)+".json"
+                        namef="qtable-trainv5-ep1-2000-"+str(ep)+".json"
                         fo = open(namef, "w")
                         json.dump(q, fo)
                         fo.close()
