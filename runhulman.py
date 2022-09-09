@@ -1,7 +1,5 @@
 import os
 from IPython.display import clear_output
-from google.colab
-import output
 import time 
 import math
 import numpy as np
@@ -106,7 +104,6 @@ while(True):
                 break
         if type_play == 2 :
             if player == 1:
-                output.clear()
                 print("Bot")
                 listaction=[]
                 listaction.append("GEM")
@@ -157,7 +154,6 @@ while(True):
                     game.action_gem(player,id_buy,"bot")
                 time.sleep(1)
             elif player == 2:
-                output.clear()
                 showpage()
                 while(True):
                     showpage()
