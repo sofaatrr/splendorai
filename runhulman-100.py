@@ -144,7 +144,7 @@ while(True):
                     
                     if(np.sum(game.gem)>=2):
                         print("[1] : GEM")
-                    else:
+                    elif(np.sum(game.gem)<2) and (len(list_buy_card)<=0):
                         print("Pass ::")
                         time.sleep(10)
                         break
