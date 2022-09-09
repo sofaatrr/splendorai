@@ -161,9 +161,9 @@ while(True):
                         print("[0] : BUY")
                     print("[1] : GEM")
                     action_type = int(input("เลือก ACTION: "))
-                    if(action_type==0):
+                    if(action_type==1):
                         break
-                    elif(action_type==1 and len(list_buy_card)>0):
+                    elif(action_type==0 and len(list_buy_card)>0):
                         break
                     else:
                         clear_output(wait=True)
