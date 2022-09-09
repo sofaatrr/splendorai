@@ -15,7 +15,7 @@ game = splender()
 Round = 0
 player=0
 type_play=2
-with open('qtablespen150new.json') as f:
+with open('qtable-trainv5-ep1-2000-1200.json') as f:
     q = json.load(f)
 def legal_move(board):
     #print(type(board))
