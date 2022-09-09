@@ -82,7 +82,7 @@ while(True):
             print("Hulman Score_P2 : {}".format(game.score_P2))
             game.show_field()
         showpage()
-        
+
         if type_play == 2 :
             if player == 1:
                 print("Bot")
@@ -141,7 +141,12 @@ while(True):
                     list_buy_card=game.check_buy_card(player)
                     if(len(list_buy_card)>0):
                         print("[0] : BUY")
-                    print("[1] : GEM")
+                    elif(np.sum(game.gem)>=2):
+                        print("[1] : GEM")
+                    else:
+                        print("Pass ::")
+                        time.sleep(10)
+                        break
                     action_type = int(input("เลือก ACTION: "))
                     if(action_type==1):
                         break
