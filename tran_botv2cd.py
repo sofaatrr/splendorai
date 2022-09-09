@@ -435,7 +435,7 @@ def random_play():
                 if (epsilon > epsilon_min):
                         epsilon *= epsilon_decay
                 if ep%200 == 0 :
-                        namef="qtable-trainv5-ep1-2000-"+str(ep)+".json"
+                        namef="qtable-trainv6-ep1-2000-"+str(ep)+".json"
                         fo = open(namef, "w")
                         json.dump(q, fo)
                         fo.close()

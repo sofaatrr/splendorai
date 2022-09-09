@@ -82,26 +82,7 @@ while(True):
             print("Hulman Score_P2 : {}".format(game.score_P2))
             game.show_field()
         showpage()
-        if(game.score_P1>=10):
-                time.sleep(5)
-                clear()
-                clear_output(wait=True)
-                print("Round : {}".format(math.ceil(Round/2)))
-                print("-------------Score--------------")
-                print("Score_P1 : {}".format(game.score_P1))
-                print("Score_P2 : {}".format(game.score_P2))
-                print("Player 1 is Win")
-                break
-        elif game.score_P2>=10:
-                time.sleep(5)
-                clear()
-                clear_output(wait=True)
-                print("Round : {}".format(math.ceil(Round/2)))
-                print("-------------Score--------------")
-                print("Score_P1 : {}".format(game.score_P1))
-                print("Score_P2 : {}".format(game.score_P2))
-                print("Player 2 is Win")
-                break
+        
         if type_play == 2 :
             if player == 1:
                 print("Bot")
