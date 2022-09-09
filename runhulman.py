@@ -141,7 +141,7 @@ while(True):
                     list_buy_card=game.check_buy_card(player)
                     if(len(list_buy_card)>0):
                         print("[0] : BUY")
-                    elif(np.sum(game.gem)>=2):
+                    if(np.sum(game.gem)>=2):
                         print("[1] : GEM")
                     else:
                         print("Pass ::")
