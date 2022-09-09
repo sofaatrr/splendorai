@@ -31,6 +31,37 @@ def new_q(q, moves):
         else:
             new_q[i] = q[i]
     return new_q
+def check_select_card(player):
+    def getgem_playe(player):
+        gem_player=[0,0,0]
+        if player==1:
+            gem_player[0]+=game.gem_P1[0]+game.gem_bonus_P1[0]
+            gem_player[1]+=game.gem_P1[1]+game.gem_bonus_P1[1]
+            gem_player[2]+=game.gem_P1[2]+game.gem_bonus_P1[2]
+        elif player==2:
+            gem_player[0]+=game.gem_P2[0]+game.gem_bonus_P2[0]
+            gem_player[1]+=game.gem_P2[1]+game.gem_bonus_P2[1]
+            gem_player[2]+=game.gem_P2[2]+game.gem_bonus_P2[2]
+        return gem_player
+    list_card=[]
+    for i in range(len(game.open_card)):
+        if game.open_card[i] == 1:
+            gem_player=getgem_playe(player)
+            pay_gem=np.array([int(game.card[i]["red_buy"]),int(game.card[i]["blue_buy"]),int(game.card[i]["green_buy"])])
+            pay_gem[0]=pay_gem[0]-gem_player[0]
+            pay_gem[1]=pay_gem[1]-gem_player[1]
+            pay_gem[2]=pay_gem[2]-gem_player[2]
+
+            pay_gem[pay_gem < 0] = 0
+            if np.sum(pay_gem)<=4:
+                list_card.append(i)
+    return list_card
+def check_opencard(opencard):
+    list_card=[]
+    for i in range(len(opencard)):
+        if opencard[i]==1:
+            list_card.append(i)
+    return list_card
 while(True):
         Round+=1
         clear_output(wait=True)
@@ -74,32 +105,44 @@ while(True):
                 print("Bot")
                 listaction=[]
                 listaction.append("GEM")
+                id_buy=-1
+                if select_gem_p1 >=5:
+                    select_gem_p1=5
+                    needid_buy_p1=-1
                 list_buy_card=game.check_buy_card(player)
-                #print(len(list_buy_card))
-                legal_moves = legal_move(game.open_used)
-                
-                try:
-                    print(q[str(game.open_used)])
-                    cardbuy = np.argmax(new_q(q[str(game.open_used)], legal_moves))
-                except KeyError:
-                    if(len(list_buy_card)>0):
-                        cardbuy=random.choice(list_buy_card)
+                card_open_ck=check_opencard(game.open_card)
+                list_select_card=check_select_card(player)
+                id_buy = np.argmax(new_q(q[str(game.card_p1)], list_select_card))
+                if needid_buy_p1>=0 and needid_buy_p1 in card_open_ck:
+                    if needid_buy_p1 in list_buy_card:
+                        listaction.append("BUY")
+                        id_buy=needid_buy_p1
+                        print("Need BUY {}".format(game.card[id_buy]["namecard"])) 
+                        needid_buy_p1=-1        
                     else:
-                        cardbuy=-1
-
-                showpage()
-                if(len(list_buy_card)>0):
-                    listaction.append("BUY")
+                        listaction.append("GEM")
+                        id_buy=needid_buy_p1
+                        print("Need BUY {}".format(game.card[id_buy]["namecard"]))             
                 else:
-                    listaction.append("GEM")
-                print(listaction)
-                action=random.choices(population=listaction,weights=[0.01,0.99])
-                if(action[0]=="BUY"):
-                    game.action_buy(player,cardbuy)
-                else:
-                    game.action_gem(player,cardbuy,"bot")
-                print("Player {} Action {} ".format(str(player),action[0]))
-                time.sleep(1)
+                                                        
+                    if len(list_buy_card)>0:
+                        id_buy = np.argmax(new_q(q[str(game.card_p1)], list_buy_card))
+                    else:
+                        id_buy = np.argmax(new_q(q[str(game.card_p1)], list_select_card))                                            
+                        if id_buy in list_buy_card:
+                            print("Need BUY {}".format(game.card[id_buy]["namecard"]))
+                            listaction.append("BUY")
+                            needid_buy_p1=-1
+                        else:
+                            if id_buy in list_buy_card:
+                                print("Need BUY {}".format(game.card[id_buy]["namecard"]))
+                                listaction.append("BUY")
+                                needid_buy_p1=-1
+                            else:
+                                needid_buy_p1=id_buy
+                                print("Need BUY {}".format(game.card[id_buy]["namecard"]))
+                                listaction.append("GEM")
+                time.sleep(3)
             elif player == 2:
                 while(True):
                     showpage()
