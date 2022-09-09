@@ -62,6 +62,8 @@ def check_opencard(opencard):
         if opencard[i]==1:
             list_card.append(i)
     return list_card
+select_gem_p1=1
+needid_buy_p1=-1
 while(True):
         Round+=1
         clear_output(wait=True)
@@ -142,7 +144,15 @@ while(True):
                                 needid_buy_p1=id_buy
                                 print("Need BUY {}".format(game.card[id_buy]["namecard"]))
                                 listaction.append("GEM")
-                time.sleep(3)
+                action=[listaction[len(listaction)-1]]
+                if(action[0]=="BUY"):
+                    print("BUY")
+                    game.action_buy(player,id_buy)
+                else:    
+                    print("GEM")
+                    print("ID BUY {}".format(id_buy))
+                    game.action_gem(player,id_buy,"bot")
+                time.sleep(1)
             elif player == 2:
                 while(True):
                     showpage()
@@ -174,3 +184,51 @@ while(True):
                                 re_turn1=game.action_gem(player,gem_id,type_play)
                                 if re_turn1!=False:
                                     i+=1
+            if(game.score_P1>=10 and Round%2 == 0 and game.score_P1>game.score_P2):
+                                
+                clear()
+                clear_output(wait=True)
+                print("Round : {}".format(math.ceil(Round/2)))
+                print("Score_P1 : {}".format(game.score_P1))
+                print("Score_P2 : {}".format(game.score_P2))
+                print("Player 1 is Win")
+                time.sleep(20)
+                break
+             
+            elif (game.score_P2>=10 and Round%2 == 0 and game.score_P2>game.score_P1):
+                                
+                clear()
+                clear_output(wait=True)
+                print("Round : {}".format(math.ceil(Round/2)))
+                print("Score_P1 : {}".format(game.score_P1))
+                print("Score_P2 : {}".format(game.score_P2))
+                print("Player 2 is Win")
+                time.sleep(20)
+                break
+            elif (game.score_P1>=10 and game.score_P2>=10 and Round%2 == 0 and game.score_P2 == game.score_P1 and np.sum(game.card_p2)<np.sum(game.card_p1)):
+                clear()
+                clear_output(wait=True)
+                print("Round : {}".format(math.ceil(Round/2)))
+                print("Score_P1 : {}".format(game.score_P1))
+                print("Score_P2 : {}".format(game.score_P2))
+                print("Player 2 is Win")
+                time.sleep(20)
+                break
+            elif (game.score_P1>=10 and game.score_P2>=10 and Round%2 == 0 and game.score_P2 == game.score_P1 and np.sum(game.card_p1)<np.sum(game.card_p2)):
+                clear()
+                clear_output(wait=True)
+                print("Round : {}".format(math.ceil(Round/2)))
+                print("Score_P1 : {}".format(game.score_P1))
+                print("Score_P2 : {}".format(game.score_P2))
+                print("Player 1 is Win")
+                time.sleep(20)
+                break
+            elif (game.score_P1>=10 and game.score_P2>=10 and Round%2 == 0 and game.score_P2 == game.score_P1 and np.sum(game.card_p2)==np.sum(game.card_p1)):
+                clear()
+                clear_output(wait=True)
+                print("Round : {}".format(math.ceil(Round/2)))
+                print("Score_P1 : {}".format(game.score_P1))
+                print("Score_P2 : {}".format(game.score_P2))
+                print("Player 1 = Player 2")
+                time.sleep(20)
+                break
