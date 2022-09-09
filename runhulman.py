@@ -154,6 +154,7 @@ while(True):
                     game.action_gem(player,id_buy,"bot")
                 time.sleep(1)
             elif player == 2:
+                showpage()
                 while(True):
                     showpage()
                     list_buy_card=game.check_buy_card(player)
