@@ -88,14 +88,17 @@ while(True):
                 print("Bot")
                 listaction=[]
                 listaction.append("GEM")
-                id_buy=-1
+                
                 if select_gem_p1 >=5:
                     select_gem_p1=5
                     needid_buy_p1=-1
                 list_buy_card=game.check_buy_card(player)
                 card_open_ck=check_opencard(game.open_card)
                 list_select_card=check_select_card(player)
-                id_buy = np.argmax(new_q(q[str(game.card_p1)], list_select_card))
+                if len(list_buy_card)>0:
+                    id_buy = np.argmax(new_q(q[str(game.card_p1)], list_select_card))
+                else:
+                    id_buy=-1
                 if needid_buy_p1>=0 and needid_buy_p1 in card_open_ck:
                     if needid_buy_p1 in list_buy_card:
                         listaction.append("BUY")
