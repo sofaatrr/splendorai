@@ -19,15 +19,15 @@ def random_play():
         sheet_history = pd.read_excel('histrory.xlsx',sheet_name='Sheet1',index_col=[0])
         
         #with open('qtable-trainv4-ep1-2000-200.json') as f:
-        #        q_ai = json.load(f)
+        #       q_ai = json.load(f)
         #q.update(q_ai)
         rewards = np.array([])
-        games = [splender() for i in range(4000)]
+        games = [splender() for i in range(100)]
         ep=0
         #     Hyperparameters
         epsilon = 1
         epsilon_min = 0.05
-        epsilon_decay = 0.9999  
+        epsilon_decay = 0.9
         timesleep=0
         timelook=0
         winp1=0
